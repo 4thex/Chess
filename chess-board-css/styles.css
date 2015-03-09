@@ -1,0 +1,43 @@
+.tile {
+  float: left; 
+  min-width: 50px; 
+  min-height: 50px; 
+  line-height: 50px; 
+  text-align: center;
+}
+
+.white.tile {
+  color: black; 
+  background-color: white;
+}
+
+.black.tile {
+  color: white; 
+  background-color: black;
+}
+
+.rank {
+  clear: both; 
+  float: left; 
+  min-width: 20px; 
+  min-height: 50px; 
+  line-height: 50px; 
+  text-align: center;
+}
+
+.file {
+  float: left;
+  min-width: 50px; 
+  min-height: 20px; 
+  line-height: 20px; 
+  text-align: center;
+}
+
+.corner {
+  clear: both; 
+  float: left; 
+  min-width: 20px; 
+  min-height: 20px; 
+  line-height: 20px; 
+  text-align: center;
+}
