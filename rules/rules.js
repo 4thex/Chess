@@ -13,18 +13,7 @@ Chess.Rules = Chess.Rules || function(model) {
 	};
 	that.isLegal = function() {
   	var blackPawn = Chess.Rules.BlackPawn(model);
-	  var conditions = [];
-    var result = function(move) {
-  		move.piece = model.peek(move.from);
-      return conditions.every(function(condition) {
-        return condition(move);
-      });
-    };
-    result.and = function(condition) {
-      conditions.push(condition);
-      return result;
-    };
-    return result
+    return Chain(model)
       .and(fromTileIsNotEmpty)
       .and(toTileDoesNotHavePieceOfOwnColor)
       .and(blackPawn.isLegal);
