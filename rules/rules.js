@@ -13,10 +13,12 @@ Chess.Rules = Chess.Rules || function(model) {
 	};
 	that.isLegal = function() {
   	var blackPawn = Chess.Rules.BlackPawn(model);
+  	var whitePawn = Chess.Rules.WhitePawn(model);
     return Chain(model)
       .and(fromTileIsNotEmpty)
       .and(toTileDoesNotHavePieceOfOwnColor)
-      .and(blackPawn.isLegal);
+      .and(blackPawn.isLegal)
+      .and(whitePawn.isLegal);
 	}();
 	return that;
 };

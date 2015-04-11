@@ -81,6 +81,7 @@ QUnit.test("Cannot move to tile that has piece of own color", function(assert) {
 	};
 	assert.ok(!rules.isLegal(move), "Moving to tile with piece of own color is illegal");
 });
+
 QUnit.test("White pawn cannot move to a lower rank", function(assert) {
 	var model = Chess.Model();
 	model.peek = function(tile) {
@@ -103,6 +104,105 @@ QUnit.test("White pawn cannot move to a lower rank", function(assert) {
 	};
 	assert.ok(!rules.isLegal(move), "Moving to lower rank is illegal");
 });
+QUnit.test("White pawn can increase 2 ranks when moved from rank 2", function(assert) {
+	var model = Chess.Model();
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[7]) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
+	  } else {
+	    return undefined;
+	  }
+	};
+	var rules = Chess.Rules(model);
+	var move = {
+			from: {
+				rank: model.static.Ranks[7],
+				file: model.static.Files.a
+			},
+			to: {
+				rank: model.static.Ranks[5],
+				file: model.static.Files.a
+			}
+	};
+	assert.ok(rules.isLegal(move), "Moving 2 ranks is ok from rank 7");
+});
+QUnit.test("White pawn cannot increase 2 ranks when moved from rank higher than 2", function(assert) {
+	var model = Chess.Model();
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[6]) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
+	  } else {
+	    return undefined;
+	  }
+	};
+	var rules = Chess.Rules(model);
+	var move = {
+			from: {
+				rank: model.static.Ranks[6],
+				file: model.static.Files.a
+			},
+			to: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.a
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 2 ranks is illegal from ranks lower than 7");
+});
+QUnit.test("White pawn can only do 'en passant' capture on the next turn after opponent double-tile move", function(assert) {
+  assert.ok(false, "Not implemented yet. It requires model history.");
+});
+QUnit.test("White pawn can change file on capture", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.a) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
+	  }
+	  if(tile.rank === model.static.Ranks[3] && tile.file === model.static.Files.b) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.a
+			},
+			to: {
+				rank: model.static.Ranks[3],
+				file: model.static.Files.b
+			}
+	};
+	assert.ok(rules.isLegal(move), "Moving to neighbouring file is legal on capture");
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.a) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
+	  }
+    return undefined;
+	};
+  assert.ok(!rules.isLegal(move), "Moving to neightbouring file is illegal if destination tile is empty");
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[7] && tile.file === model.static.Files.a) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
+	  }
+	  if(tile.rank === model.static.Ranks[5] && tile.file === model.static.Files.b) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+    return undefined;
+	};
+  move = {
+			from: {
+				rank: model.static.Ranks[7],
+				file: model.static.Files.a
+			},
+			to: {
+				rank: model.static.Ranks[5],
+				file: model.static.Files.b
+			}
+	};  
+  assert.ok(!rules.isLegal(move), "Can only move one rank when capturing changing file");
+});
+
 QUnit.test("Black pawn cannot move to a higher rank", function(assert) {
 	var model = Chess.Model();
 	model.peek = function(tile) {
@@ -222,4 +322,41 @@ QUnit.test("Black pawn can change file on capture", function(assert) {
 			}
 	};  
   assert.ok(!rules.isLegal(move), "Can only move one rank when capturing changing file");
+});
+
+QUnit.test("Knight can move one file, and two ranks", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.b) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[1],
+				file: model.static.Files.b
+			},
+			to: {
+				rank: model.static.Ranks[3],
+				file: model.static.Files.a
+			}
+	};
+	assert.ok(rules.isLegal(move), "Moving 2 ranks up and one file to the right is legal");
+});
+QUnit.test("Knight can move one rank, and two files", function(assert) {
+  
+});
+QUnit.test("Knight cannot move one rank, and one file", function(assert) {
+  
+});
+QUnit.test("Knight cannot move two ranks, and two files", function(assert) {
+  
+});
+QUnit.test("Knight cannot move more than two ranks", function(assert) {
+  
+});
+QUnit.test("Knight cannot move more than two files", function(assert) {
+  
 });
