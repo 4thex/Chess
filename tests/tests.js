@@ -324,39 +324,208 @@ QUnit.test("Black pawn can change file on capture", function(assert) {
   assert.ok(!rules.isLegal(move), "Can only move one rank when capturing changing file");
 });
 
-QUnit.test("Knight can move one file, and two ranks", function(assert) {
+QUnit.test("Knight can move 2 ranks, and 1 file", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
 	model.peek = function(tile) {
-	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.b) {
+	  if(tile.rank === model.static.Ranks[3] && tile.file === model.static.Files.c) {
 	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
 	  }
     return undefined;
 	};
 	var move = {
 			from: {
-				rank: model.static.Ranks[1],
-				file: model.static.Files.b
+				rank: model.static.Ranks[3],
+				file: model.static.Files.c
 			},
 			to: {
-				rank: model.static.Ranks[3],
-				file: model.static.Files.a
+				rank: model.static.Ranks[5],
+				file: model.static.Files.b
 			}
 	};
-	assert.ok(rules.isLegal(move), "Moving 2 ranks up and one file to the right is legal");
+	assert.ok(rules.isLegal(move), "Moving 2 ranks up and 1 file to the left is legal");
+	
+	move.to.file = model.static.Files.d;
+	assert.ok(rules.isLegal(move), "Moving 2 ranks up and 1 file to the right is legal");
+	
+	move.to.rank = model.static.Ranks[1];
+	move.to.file = model.static.Files.b;
+	assert.ok(rules.isLegal(move), "Moving 2 ranks down and 1 file to the left is legal");
+
+	move.to.file = model.static.Files.d;
+	assert.ok(rules.isLegal(move), "Moving 2 ranks down and 1 file to the right is legal");
 });
-QUnit.test("Knight can move one rank, and two files", function(assert) {
+
+QUnit.test("Knight can move 1 rank, and 2 files", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[3] && tile.file === model.static.Files.c) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[3],
+				file: model.static.Files.c
+			},
+			to: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.e
+			}
+	};
+	assert.ok(rules.isLegal(move), "Moving 1 rank up and 2 files to the right is legal");
+	
+	move.to.file = model.static.Files.a;
+	assert.ok(rules.isLegal(move), "Moving 1 rank up and 2 files to the left is legal");
+	
+	move.to.rank = model.static.Ranks[2];
+	move.to.file = model.static.Files.a;
+	assert.ok(rules.isLegal(move), "Moving 1 rank down and 2 files to the left is legal");
+
+	move.to.file = model.static.Files.e;
+	assert.ok(rules.isLegal(move), "Moving 1 rank down and 2 files to the right is legal");
   
 });
-QUnit.test("Knight cannot move one rank, and one file", function(assert) {
+
+QUnit.test("Knight cannot move 1 rank, and 1 file", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[3] && tile.file === model.static.Files.c) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[3],
+				file: model.static.Files.c
+			},
+			to: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 1 rank up and 1 file to the right is illegal");
+	
+	move.to.file = model.static.Files.b;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank up and 1 file to the left is illegal");
+	
+	move.to.rank = model.static.Ranks[2];
+	move.to.file = model.static.Files.d;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank down and 1 file to the right is illegal");
+
+	move.to.file = model.static.Files.b;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank down and 1 file to the left is illegal");
+  
   
 });
-QUnit.test("Knight cannot move two ranks, and two files", function(assert) {
+
+QUnit.test("Knight cannot move 2 ranks, and 2 files", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[3] && tile.file === model.static.Files.c) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[3],
+				file: model.static.Files.c
+			},
+			to: {
+				rank: model.static.Ranks[5],
+				file: model.static.Files.e
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 2 ranks up and 2 files to the right is illegal");
+	
+	move.to.file = model.static.Files.a;
+	assert.ok(!rules.isLegal(move), "Moving 2 ranks up and 2 files to the left is illegal");
+
+	move.to.rank = model.static.Ranks[1];
+	move.to.file = model.static.Files.e;
+	assert.ok(!rules.isLegal(move), "Moving 2 ranks down and 2 files to the right is illegal");
+
+	move.to.file = model.static.Files.a;
+	assert.ok(!rules.isLegal(move), "Moving 2 ranks down and 2 files to the left is illegal");
   
 });
-QUnit.test("Knight cannot move more than two ranks", function(assert) {
+QUnit.test("Knight cannot move more than 2 ranks", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[7],
+				file: model.static.Files.e
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks up and 1 files to the right is illegal");
+
+	move.to.file = model.static.Files.c;
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks up and 1 files to the left is illegal");
+
+	move.to.rank = model.static.Ranks[1];
+	move.to.file = model.static.Files.e;
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks down and 1 files to the right is illegal");
+
+	move.to.file = model.static.Files.c;
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks down and 1 files to the left is illegal");
+});
+
+QUnit.test("Knight cannot move more than 2 files", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[5],
+				file: model.static.Files.g
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 1 rank up and 3 files to the right is illegal");
+
+	move.to.file = model.static.Files.a;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank up and 3 files to the left is illegal");
+
+	move.to.rank = model.static.Ranks[3];
+	move.to.file = model.static.Files.g;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank down and 3 files to the right is illegal");
+
+	move.to.file = model.static.Files.a;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank down and 3 files to the left is illegal");
   
 });
-QUnit.test("Knight cannot move more than two files", function(assert) {
-  
-});
+
+
+
+
+
+
+
+
+
+
