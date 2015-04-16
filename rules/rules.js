@@ -15,12 +15,14 @@ Chess.Rules = Chess.Rules || function(model) {
   	var blackPawn = Chess.Rules.BlackPawn(model);
   	var whitePawn = Chess.Rules.WhitePawn(model);
   	var knight = Chess.Rules.Knight(model);
+  	var rook = Chess.Rules.Rook(model);
     return Chain(model)
       .and(fromTileIsNotEmpty)
       .and(toTileDoesNotHavePieceOfOwnColor)
       .and(blackPawn.isLegal)
       .and(whitePawn.isLegal)
-      .and(knight.isLegal);
+      .and(knight.isLegal)
+      .and(rook.isLegal);
 	}();
 	return that;
 };

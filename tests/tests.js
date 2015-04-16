@@ -520,12 +520,107 @@ QUnit.test("Knight cannot move more than 2 files", function(assert) {
   
 });
 
+QUnit.test("Rook cannot move both rank and file", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[5],
+				file: model.static.Files.e
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 1 rank up and 1 file to the right is illegal");
+	move.to.file = model.static.Files.c;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank up and 1 file to the left is illegal");
+	move.to.rank = model.static.Ranks[3];
+	move.to.file = model.static.Files.e;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank down and 1 file to the right is illegal");
+	move.to.file = model.static.Files.c;
+	assert.ok(!rules.isLegal(move), "Moving 1 rank down and 1 file to the left is illegal");
+});
 
+QUnit.test("Rook cannot move past any piece in the way", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+	  if(tile.rank === model.static.Ranks[5] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.P};
+	  }
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.P};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[6],
+				file: model.static.Files.d
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving past a piece on same file is illegal");
+	move.to.rank = model.static.Ranks[4];
+	move.to.file = model.static.Files.f;
+	assert.ok(!rules.isLegal(move), "Moving past a piece on same rank is illegal");
+});
 
+QUnit.test("Rook can move 7 ranks", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.a) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[1],
+				file: model.static.Files.a
+			},
+			to: {
+				rank: model.static.Ranks[8],
+				file: model.static.Files.a
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 7 ranks is legal");
+});
 
-
-
-
-
-
+QUnit.test("Rook can move 7 files", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.a) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[1],
+				file: model.static.Files.a
+			},
+			to: {
+				rank: model.static.Ranks[1],
+				file: model.static.Files.h
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 7 files is legal");
+});
 
