@@ -34,6 +34,7 @@ Chess.Rules.Rook = Chess.Rules.Rook || function(model) {
         return false;
       }
     } while(rank < move.to.rank);
+    return true;
   };
   
   that.isLegal = function() {
