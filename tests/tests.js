@@ -706,7 +706,82 @@ QUnit.test("Bishop cannot move past any piece in the way", function(assert) {
 	assert.ok(!rules.isLegal(move), "Moving past a piece in the way is illegal");
 });
 
+QUnit.test("King cannot move more than one file and/or one rank", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[6],
+				file: model.static.Files.d
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving more than one rank up is illegal");
+  
+  move.to.rank = model.static.Ranks[2];
+	assert.ok(!rules.isLegal(move), "Moving more than one rank down is illegal");
+	
+	move.to.rank = model.static.Ranks[4];
+	move.to.rank = model.static.Files.f;
+	assert.ok(!rules.isLegal(move), "Moving more than one file to the right is illegal");
+	
+	move.to.rank = model.static.Files.b;
+	assert.ok(!rules.isLegal(move), "Moving more than one file to the left is illegal");
+	
+	move.to.rank = model.static.Ranks[6];
+	move.to.file = model.static.Files.e;
+	assert.ok(!rules.isLegal(move), "Moving more than one rank up, and one file to the left is illegal");
+});
 
-
-
+QUnit.test("King can move one file and/or one rank in all directions", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[5],
+				file: model.static.Files.d
+			}
+	};
+	assert.ok(rules.isLegal(move), "Moving one rank up is legal");
+	
+	move.to.file = model.static.Files.e;
+	assert.ok(rules.isLegal(move), "Moving one rank up, and one file to the right is legal");
+	
+	move.to.rank = model.static.Ranks[4];
+	assert.ok(rules.isLegal(move), "Moving one file to the right is legal");
+	
+	move.to.rank = model.static.Ranks[3];
+	assert.ok(rules.isLegal(move), "Moving one rank down, and one file to the right is legal");
+	
+	move.to.file = model.static.Files.d;
+	assert.ok(rules.isLegal(move), "Moving one rank down is legal");
+	
+	move.to.file = model.static.Files.c;
+	assert.ok(rules.isLegal(move), "Moving one rank down, and one file to the left is legal");
+	
+	move.to.rank = model.static.Ranks[4];
+	assert.ok(rules.isLegal(move), "Moving one file to the left is legal");
+	
+	move.to.rank = model.static.Ranks[5];
+	assert.ok(rules.isLegal(move), "Moving one rank up, and one file to the left is legal");
+});
 
