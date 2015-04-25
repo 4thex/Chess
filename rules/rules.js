@@ -17,6 +17,7 @@ Chess.Rules = Chess.Rules || function(model) {
   	var rook = Chess.Rules.Rook(model);
   	var bishop = Chess.Rules.Bishop(model);
   	var king = Chess.Rules.King(model);
+  	var queen = Chess.Rules.Queen(model);
     return Chain(model)
       .and(fromTileIsNotEmpty)
       .and(toTileDoesNotHavePieceOfOwnColor)
@@ -25,7 +26,8 @@ Chess.Rules = Chess.Rules || function(model) {
       .and(knight.isLegal)
       .and(rook.isLegal)
       .and(bishop.isLegal)
-      .and(king.isLegal);
+      .and(king.isLegal)
+      .and(queen.isLegal);
 	}();
 	return that;
 };

@@ -785,3 +785,98 @@ QUnit.test("King can move one file and/or one rank in all directions", function(
 	assert.ok(rules.isLegal(move), "Moving one rank up, and one file to the left is legal");
 });
 
+QUnit.test("Queen can move straight in all directions", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.Q};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[8],
+				file: model.static.Files.d
+			}
+	};
+	assert.ok(rules.isLegal(move), "Moving 4 ranks up is legal");
+	
+	move.to.file = model.static.Files.h;
+	assert.ok(rules.isLegal(move), "Moving 4 ranks up, and 4 files to the right is legal");
+	
+	move.to.rank = model.static.Ranks[4];
+	assert.ok(rules.isLegal(move), "Moving 4 files to the right is legal");
+	
+	move.to.rank = model.static.Ranks[1];
+	move.to.file = model.static.Files.g;
+	assert.ok(rules.isLegal(move), "Moving 3 ranks down, and 3 files to the right is legal");
+	
+	move.to.file = model.static.Files.d;
+	assert.ok(rules.isLegal(move), "Moving 3 ranks down is legal");
+	
+	move.to.file = model.static.Files.a;
+	assert.ok(rules.isLegal(move), "Moving 3 ranks down, and 3 file to the left is legal");
+	
+	move.to.rank = model.static.Ranks[4];
+	assert.ok(rules.isLegal(move), "Moving 3 files to the left is legal");
+	
+	move.to.rank = model.static.Ranks[8];
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks up, and 3 files to the left is legal");
+});
+
+QUnit.test("Queen cannot move different count of file and rank unless one is 0", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.Q};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[8],
+				file: model.static.Files.e
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving 4 ranks up, and 1 file to the right is illegal");
+	
+	move.to.file = model.static.Files.f;
+	assert.ok(!rules.isLegal(move), "Moving 4 ranks up, and 2 files to the right is illegal");
+	
+	move.to.rank = model.static.Ranks[5];
+	assert.ok(!rules.isLegal(move), "Moving 1 rank up, and 2 files to the right is illegal");
+	
+	move.to.rank = model.static.Ranks[1];
+	move.to.file = model.static.Files.f;
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks down, and 2 files to the right is illegal");
+	
+	move.to.file = model.static.Files.f;
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks down, and 2 files to the right is illegal");
+	
+	move.to.file = model.static.Files.b;
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks down, and 2 files to the left is illegal");
+	
+	move.to.rank = model.static.Ranks[3];
+	assert.ok(!rules.isLegal(move), "Moving 3 files to the left, and 1 rank down is illegal");
+	
+	move.to.rank = model.static.Ranks[8];
+	assert.ok(!rules.isLegal(move), "Moving 3 ranks up, and 2 files to the left is illegal");
+});
+
+
+
+
+
+
+
+
