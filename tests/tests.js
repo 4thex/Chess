@@ -873,6 +873,20 @@ QUnit.test("Queen cannot move different count of file and rank unless one is 0",
 	assert.ok(!rules.isLegal(move), "Moving 3 ranks up, and 2 files to the left is illegal");
 });
 
+QUnit.module("Moves");
+QUnit.test("Move translates [file rank] pawn-move correctly", function(assert) {
+  var model = Chess.Model();
+  var move = Chess.Move.translate({san: "e3", model: model});   
+  assert.strictEqual(move.to.file, model.static.Files.e, "Expected file e");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.e, "Expected file e");
+  assert.strictEqual(move.from.rank, model.static.Ranks["2"], "Expected rank 2");
+});
+
+
+
+
+
 
 
 
