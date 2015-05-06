@@ -63,8 +63,36 @@ Chess.Model = Chess.Model || function constructor() {
     rank[static.Files.h] = {color: static.Colors.Black, kind: static.Kinds.R};
     return board;
   }();
-  that.move = function(from, to, by) {
-    
+  that.move = function(spec) {
+    var from = spec.from;
+    var to = spec.to;
+    var by = spec.by;
+  };
+  that.whichFile = function whichFile(kind, rank, color) {
+    var fileName = Object.getOwnPropertyNames(static.Files).filter(function(name) {
+      var file = static.Files[name];
+      var piece = that.peek({rank: rank, file: file});
+      if(piece && piece.kind === kind && piece.color === color) {
+        return true;
+      }
+    })[0];
+    if(fileName) {
+      return static.Files[fileName];
+    }
+    return undefined;
+  };
+  that.whichRank = function whichRank(kind, file, color) {
+    var rankName = Object.getOwnPropertyNames(static.Ranks).filter(function(name) {
+      var rank = static.Ranks[name];
+      var piece = that.peek({rank: rank, file: file});
+      if(piece && piece.kind === kind && piece.color === color) {
+        return true;
+      }
+    })[0];
+    if(rankName) {
+      return static.Ranks[rankName];
+    }
+    return undefined;
   };
   that.peek = function(tile) {
     var rank = board[tile.rank] || [];
