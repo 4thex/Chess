@@ -3,6 +3,7 @@ Chess.Move = Chess.Move || function constructor(spec) {
   that.to = spec.to;
   that.from = spec.from;
   that.by = spec.by;
+  that.promote = spec.promote;
   var model = spec.model;
   return that;
 };
@@ -13,25 +14,30 @@ Chess.Move.createFromSan = function createFromSan(spec) {
   var rules = Chess.Rules(model);
   var that = Chess.Move(spec);
   var split = function(san) {
-    var expression = /(O-O(-O)?)|([KQBNR]?)([a-h])?([1-8])?x?([a-h][1-8])([+#])?(e\.\p\.)?/g;
+    var expression = /(O-O(-O)?)|([KQBNR]?)([a-h])?([1-8])?x?([a-h][1-8])(=([QBNR]))?([+#])?(e\.\p\.)?/g;
     return expression.exec(san);
   }(spec.san);
   that.to = {};
   that.from = {};
   var kind;
-  if(split[1] && !split[2]) { // King's castle
+  if(split[1]) {
+    that.to.rank = model.static.Ranks["1"];
     that.from = {
       file: model.static.Files.e,
       rank: model.static.Ranks["1"]
     };
-    that.to = {
-      file: model.static.Files.g,
-      rank: model.static.Ranks["1"]
-    };
+    if(split[2]) { // Queen's castle
+      that.to.file = model.static.Files.b;
+    }  else { // King's castle
+      that.to.file = model.static.Files.g;
+    }
     return that;
   }
   that.to.file = model.static.Files[split[6][0]];
   that.to.rank = model.static.Ranks[split[6][1]];
+  if(split[7]) {
+    that.promote = model.static.Kinds[split[8]];
+  }
   if(split[3]) {
     kind = model.static.Kinds[split[3]];
   } else {

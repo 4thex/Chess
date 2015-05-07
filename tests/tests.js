@@ -895,7 +895,7 @@ QUnit.test("Queen cannot move different count of file and rank unless one is 0",
 });
 
 QUnit.module("Moves");
-QUnit.test("Move translates [file rank] pawn-move correctly", function(assert) {
+QUnit.test("SAN [file rank] pawn-move is translated correctly", function(assert) {
   var model = Chess.Model();
   model.peek = function(tile) {
 	  if(tile.rank === model.static.Ranks[2] && tile.file === model.static.Files.e) {
@@ -911,14 +911,14 @@ QUnit.test("Move translates [file rank] pawn-move correctly", function(assert) {
   assert.strictEqual(move.from.rank, model.static.Ranks["2"], "Expected rank 2");
 });
 
-QUnit.test("Move translates O-O (king's castle) correctly", function(assert) {
+QUnit.test("SAN O-O (king's castle) is translated correctly", function(assert) {
   var model = Chess.Model();
   model.peek = function(tile) {
 	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.e) {
 	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
 	  }
 	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.h) {
-	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
 	  }
     return undefined;
 	};
@@ -931,19 +931,45 @@ QUnit.test("Move translates O-O (king's castle) correctly", function(assert) {
   
 });
 
-QUnit.test("Move translates O-O-O (queen's castle) correctly", function(assert) {
+QUnit.test("SAN O-O-O (queen's castle) is translated correctly", function(assert) {
+  var model = Chess.Model();
+  model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
+	  }
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.a) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+    return undefined;
+	};
+
+  var move = Chess.Move.createFromSan({san: "O-O-O", model: model, by: model.static.Colors.White});   
+  assert.strictEqual(move.to.file, model.static.Files.b, "Expected file b");
+  assert.strictEqual(move.to.rank, model.static.Ranks["1"], "Expected rank 1");
+  assert.strictEqual(move.from.file, model.static.Files.e, "Expected file e");
+  assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
+QUnit.test("SAN pawn promotion is translated correctly", function(assert) {
+  var model = Chess.Model();
+  model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[7] && tile.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.P};
+	  }
+    return undefined;
+  };  
+  var move = Chess.Move.createFromSan({san: "e8=Q", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.e, "Expected file b");
+  assert.strictEqual(move.to.rank, model.static.Ranks["8"], "Expected rank 8");
+  assert.strictEqual(move.from.file, model.static.Files.e, "Expected file e");
+  assert.strictEqual(move.from.rank, model.static.Ranks["7"], "Expected rank 7");
+  
+  assert.strictEqual(move.promote, model.static.Kinds.Q, "Expected Q");
+  move = Chess.Move.createFromSan({san: "e8=B", model: model, by: model.static.Colors.White});   
+  assert.strictEqual(move.promote, model.static.Kinds.B, "Expected B");
+  move = Chess.Move.createFromSan({san: "e8=N", model: model, by: model.static.Colors.White});   
+  assert.strictEqual(move.promote, model.static.Kinds.N, "Expected N");
+  move = Chess.Move.createFromSan({san: "e8=R", model: model, by: model.static.Colors.White});   
+  assert.strictEqual(move.promote, model.static.Kinds.R, "Expected R");
+});
 
