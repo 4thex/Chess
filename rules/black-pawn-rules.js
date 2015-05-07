@@ -39,26 +39,9 @@ Chess.Rules.BlackPawn = Chess.Rules.BlackPawn || function(model) {
 	};
 
   that.isLegal = function() {
-	  var conditions = [];
-    var result = function(move) {
-  		move.piece = model.peek(move.from);
-  		var preConditions = [isPawn, isBlack];
-  		if(!preConditions.every(function(condition) {
-  		  return condition(move);
-  		})) {
-  		  // These rules do not apply
-  		  return true;
-  		}
-      return conditions.every(function(condition) {
-        return condition(move);
-      });
-    };
-    result.and = function (condition) {
-      conditions.push(condition);
-      return result;
-    };
-    
-    return result
+    return Chain(model)
+      .when(isPawn)
+      .when(isBlack)
       .and(decreasesRank)
       .and(onlyDecreasesTwoFromRank7)
       .and(isChangingFileOnCapture);

@@ -1,7 +1,6 @@
 var Chess = Chess || {};
 Chess.Rules = Chess.Rules || function(model) {
 	var that = {};
-	var definitions = model.static;
 	var fromTileIsNotEmpty = function(move) {
 	  return move.piece;
 	};
@@ -13,21 +12,22 @@ Chess.Rules = Chess.Rules || function(model) {
 	};
 	that.isLegal = function() {
   	var blackPawn = Chess.Rules.BlackPawn(model);
-	  var conditions = [];
-    var result = function(move) {
-  		move.piece = model.peek(move.from);
-      return conditions.every(function(condition) {
-        return condition(move);
-      });
-    };
-    result.and = function(condition) {
-      conditions.push(condition);
-      return result;
-    };
-    return result
+  	var whitePawn = Chess.Rules.WhitePawn(model);
+  	var knight = Chess.Rules.Knight(model);
+  	var rook = Chess.Rules.Rook(model);
+  	var bishop = Chess.Rules.Bishop(model);
+  	var king = Chess.Rules.King(model);
+  	var queen = Chess.Rules.Queen(model);
+    return Chain(model)
       .and(fromTileIsNotEmpty)
       .and(toTileDoesNotHavePieceOfOwnColor)
-      .and(blackPawn.isLegal);
+      .and(blackPawn.isLegal)
+      .and(whitePawn.isLegal)
+      .and(knight.isLegal)
+      .and(rook.isLegal)
+      .and(bishop.isLegal)
+      .and(king.isLegal)
+      .and(queen.isLegal);
 	}();
 	return that;
 };
