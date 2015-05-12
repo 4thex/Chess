@@ -806,6 +806,18 @@ QUnit.test("King can move one file and/or one rank in all directions", function(
 	assert.ok(rules.isLegal(move), "Moving one rank up, and one file to the left is legal");
 });
 
+QUnit.test("Castling is not allowed if king is in check", function(assert) {
+  
+});
+
+QUnit.test("Castling is not allowed if any square between king and rook are threatened", function(assert) {
+  
+});
+
+QUnit.test("Castling is not allowed if king or rook have already moved", function(assert) {
+  
+});
+
 QUnit.test("Queen can move straight in all directions", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
