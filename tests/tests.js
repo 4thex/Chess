@@ -973,3 +973,88 @@ QUnit.test("SAN pawn promotion is translated correctly", function(assert) {
   assert.strictEqual(move.promote, model.static.Kinds.R, "Expected R");
 });
 
+QUnit.test("SAN unambiguous knight move is translated correctly", function(assert) {
+  var model = Chess.Model();
+  model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.g) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+  };  
+  var move = Chess.Move.createFromSan({san: "Nf3", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.g, "Expected file g");
+  assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
+});
+
+QUnit.test("SAN ambiguous knight move is translated correctly", function(assert) {
+  var model = Chess.Model();
+  model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.g) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+	  if(tile.rank === model.static.Ranks[5] && tile.file === model.static.Files.g) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+  };  
+  var move = Chess.Move.createFromSan({san: "N1f3", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.g, "Expected file g");
+  assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
+  move = Chess.Move.createFromSan({san: "N5f3", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.g, "Expected file g");
+  assert.strictEqual(move.from.rank, model.static.Ranks["5"], "Expected rank 5");
+  
+  model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.g) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+  };  
+  move = Chess.Move.createFromSan({san: "Ngf3", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.g, "Expected file g");
+  assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
+  move = Chess.Move.createFromSan({san: "Nef3", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.e, "Expected file e");
+  assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
+
+  model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.g) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+	  if(tile.rank === model.static.Ranks[5] && tile.file === model.static.Files.g) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+  };  
+  move = Chess.Move.createFromSan({san: "Ne1f3", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.e, "Expected file e");
+  assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
+  move = Chess.Move.createFromSan({san: "Ng1f3", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.g, "Expected file g");
+  assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
+  move = Chess.Move.createFromSan({san: "Ng5f3", model: model, by: model.static.Colors.White}); 
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
+  assert.strictEqual(move.from.file, model.static.Files.g, "Expected file g");
+  assert.strictEqual(move.from.rank, model.static.Ranks["5"], "Expected rank 5");
+});

@@ -49,14 +49,14 @@ Chess.Move.createFromSan = function createFromSan(spec) {
   if(split[5]) {
     that.from.rank = model.static.Ranks[split[5]];
   }
-  if(that.from.rank && !that.from.file) {
+  if(that.from.rank !== undefined && that.from.file === undefined) {
     that.from.file = model.whichFile(kind, that.from.rank, spec.by);
   }
-  if(!that.from.rank && that.from.file) {
+  if(that.from.rank === undefined && that.from.file !== undefined) {
     that.from.rank = model.whichRank(kind, that.from.file, spec.by);
   }
   var move;
-  if(!that.from.rank && !that.from.file) {
+  if(that.from.rank === undefined && that.from.file === undefined) {
     Object.getOwnPropertyNames(model.static.Files).filter(function(file) {
       return Object.getOwnPropertyNames(model.static.Ranks).filter(function(rank) {
         move = {
