@@ -4,7 +4,9 @@ Chess.Rules.Knight = Chess.Rules.Knight || function(model) {
   
   // Pre-conditions
 	var isKnight = function(move) {
-	  return move.piece.kind === definitions.Kinds.N;
+	  var result = move.piece.kind === definitions.Kinds.N;
+	  console.log("Chess.Rules.Knight.isKnight: "+JSON.stringify(move)+" = "+result);
+	  return result;
 	};
 	
 	// Rules

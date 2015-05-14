@@ -815,7 +815,22 @@ QUnit.test("Castling is not allowed if any square between king and rook are thre
 });
 
 QUnit.test("Castling is not allowed if king or rook have already moved", function(assert) {
+
   
+});
+
+QUnit.test("Castling is allowed if neither king nor rook have moved yet", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.move(Chess.Move.createFromSan({san:"e3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
+  assert.deepEqual(model.peek({file: model.static.Files.g, rank: model.static.Ranks["1"]}), {color: model.static.Colors.White, kind: model.static.Kinds.K}, "Expected white king");
+  assert.deepEqual(model.peek({file: model.static.Files.f, rank: model.static.Ranks["1"]}), {color: model.static.Colors.White, kind: model.static.Kinds.R}, "Expected white rook");
 });
 
 QUnit.test("Queen can move straight in all directions", function(assert) {

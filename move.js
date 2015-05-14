@@ -13,12 +13,14 @@ Chess.Move.createFromSan = function createFromSan(spec) {
   var model = spec.model;
   var rules = Chess.Rules(model);
   var that = Chess.Move(spec);
+  that.by = spec.by;
   var split = function(san) {
     var expression = /(O-O(-O)?)|([KQBNR]?)([a-h])?([1-8])?x?([a-h][1-8])(=([QBNR]))?([+#])?(e\.\p\.)?/g;
     return expression.exec(san);
   }(spec.san);
   that.to = {};
   that.from = {};
+
   var kind;
   if(split[1]) {
     that.to.rank = model.static.Ranks["1"];

@@ -18,6 +18,7 @@ Chess.Model = Chess.Model || function constructor() {
   static.Files = {a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7};
   static.Colors = {White: 0, Black: 1};
   static.Kinds = {K: 0,	Q: 1, B: 2,	N: 3, R: 4, P: 5};
+  var moves = [];
   var that = {
     static: static
   };
@@ -67,6 +68,24 @@ Chess.Model = Chess.Model || function constructor() {
     var from = spec.from;
     var to = spec.to;
     var by = spec.by;
+    if(!rules.isLegal(spec)) {
+      throw "illegal move";
+    }
+    moves.push(spec);
+    var piece = that.peek(from);
+    that.remove(from);
+    that.place(to, piece);
+    // Place rook for castling
+    var fileDiff = to.file-from.file;
+    if(Math.abs(fileDiff) > 1 && piece.kind === static.Kinds.K) {
+      if(fileDiff === 2) { // King's castle
+        that.remove({file: static.Files.h, rank: to.rank});
+        that.place({file: static.Files.f, rank: to.rank}, {color: piece.color, kind: static.Kinds.R});
+      } else { // Queen's castle
+        that.remove({file: static.Files.a, rank: to.rank});
+        that.place({file: static.Files.c, rank: to.rank}, {color: piece.color, kind: static.Kinds.R});
+      }
+    }
   };
   that.whichFile = function whichFile(kind, rank, color) {
     var fileName = Object.getOwnPropertyNames(static.Files).filter(function(name) {
@@ -94,11 +113,25 @@ Chess.Model = Chess.Model || function constructor() {
     }
     return undefined;
   };
-  that.peek = function(tile) {
-    var rank = board[tile.rank] || [];
-    return rank[tile.file];
+  that.peek = function(square) {
+    var rank = board[square.rank] || [];
+    return rank[square.file];
   };
+  that.hasMoved = function(square) {
+    return moves.some(function(move) {
+      return move.to.file === square.file && move.to.rank === square.rank;
+    });
+  };
+  that.place = function(square, piece) {
+    var rank = board[square.rank] || [];
+    rank[square.file] = piece;
+  };
+  that.remove = function(square) {
+    that.place(square, undefined);
+  };
+  var rules = Chess.Rules(that);
   return that;
 };
 // Initialize statics
 // if(!Chess.Model.Files) Chess.Model();
+
