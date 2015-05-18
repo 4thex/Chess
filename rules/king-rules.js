@@ -1,4 +1,4 @@
-Chess.Rules.King = Chess.Rules.King || function(model) {
+Chess.Rules.King = Chess.Rules.King || function(rules, model) {
 	var that = {};
   var definitions = model.static;
   
@@ -13,13 +13,51 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   var oneInAnyDirectionOrCastle = function(move) {
     var fileChange = Math.abs(move.to.file - move.from.file);
     var rankChange = Math.abs(move.to.rank - move.from.rank);
-    var castleChain = Chain(model).when(castle).and(hasNotMoved)(move);
-    if(fileChange > 1) return castleChain;
+    var castleChain = Chain(model)
+      .when(castle)
+      .and(kingHasNotMoved)
+      .and(rookHasNotMoved)
+      .and(kingNotThreatened);
+    if(fileChange > 1) return castleChain(move);
     return fileChange <= 1 && rankChange <= 1;
   };
   
-  var hasNotMoved = function(move) {
+  var kingHasNotMoved = function(move) {
     return !model.hasMoved(move.from);
+  };
+  
+  var kingNotThreatened = function(move) {
+    var thread = {};
+    var kingSquare = move.from;
+    thread.file = Object.getOwnPropertyNames(model.static.Files).filter(function(file) {
+      thread.rank = Object.getOwnPropertyNames(model.static.Ranks).filter(function(rank) {
+        var threadMove = {
+          from: {
+              file: model.static.Files[file],
+              rank: model.static.Ranks[rank]
+            },
+          to: kingSquare
+        };
+        if(rules.isLegal(threadMove)) {
+          return true;
+        }
+        return false;
+      });
+      return thread.rank.length > 0;
+    });
+    return thread.file.length === 0 && thread.rank.length === 0;
+  };
+  
+  var rookHasNotMoved = function(move) {
+    var fileChange = Math.abs(move.to.file - move.from.file);
+    var rookSquare = {};
+    if(fileChange > 1) {
+      rookSquare.file = model.static.Files.h;
+    } else {
+      rookSquare.file = model.static.Files.a;
+    }
+    rookSquare.rank = move.to.rank;
+    return !model.hasMoved(rookSquare);
   };
   
   var castle = function(move) {
@@ -65,3 +103,6 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   }();
   return that;
 };
+
+
+

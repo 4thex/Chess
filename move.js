@@ -68,7 +68,8 @@ Chess.Move.createFromSan = function createFromSan(spec) {
           },
           to: that.to
         };
-        if(rules.isLegal(move)) {
+        if(rules.isLegal(move)
+          && model.peek(move.from).kind === kind) {
           that.from = move.from;
           return true;
         }

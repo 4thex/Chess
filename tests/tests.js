@@ -807,16 +807,70 @@ QUnit.test("King can move one file and/or one rank in all directions", function(
 });
 
 QUnit.test("Castling is not allowed if king is in check", function(assert) {
-  
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.move(Chess.Move.createFromSan({san:"e3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"c6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Bc4", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"d3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"Qa5+", model: model, by: model.static.Colors.Black}));
+  try {
+    model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
+    assert.ok(false, "Missing expected exception");
+  } catch (exception) {
+    assert.strictEqual(exception.message, "illegal move", "Expected error when king is in check");
+  }
+});
+
+QUnit.test("Castling is not allowed if rook is threatened", function(assert) {
 });
 
 QUnit.test("Castling is not allowed if any square between king and rook are threatened", function(assert) {
-  
 });
 
-QUnit.test("Castling is not allowed if king or rook have already moved", function(assert) {
+QUnit.test("Castling is not allowed if rook has already moved", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.move(Chess.Move.createFromSan({san:"e3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Rg1", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"f6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Rh1", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"f5", model: model, by: model.static.Colors.Black}));
+  try {
+    model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
+    assert.ok(false, "Missing expected exception");
+  } catch (exception) {
+    assert.strictEqual(exception.message, "illegal move", "Expected error when rook has already moved");
+  }
+});
 
-  
+QUnit.test("Castling is not allowed if king has already moved", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.move(Chess.Move.createFromSan({san:"e3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Kf1", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"f6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Ke1", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"f5", model: model, by: model.static.Colors.Black}));
+  try {
+    model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
+    assert.ok(false, "Missing expected exception");
+  } catch (exception) {
+    assert.strictEqual(exception.message, "illegal move", "Expected error when king has already moved");
+  }
 });
 
 QUnit.test("Castling is allowed if neither king nor rook have moved yet", function(assert) {
@@ -936,6 +990,25 @@ QUnit.test("SAN [file rank] pawn-move is translated correctly", function(assert)
   assert.strictEqual(move.to.rank, model.static.Ranks["3"], "Expected rank 3");
   assert.strictEqual(move.from.file, model.static.Files.e, "Expected file e");
   assert.strictEqual(move.from.rank, model.static.Ranks["2"], "Expected rank 2");
+});
+
+QUnit.test("SAN [file rank] king-move is translated correctly", function(assert) {
+  var model = Chess.Model();
+  model.peek = function(tile) {
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
+	  }
+	  if(tile.rank === model.static.Ranks[1] && tile.file === model.static.Files.h) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+    return undefined;
+	};
+
+  var move = Chess.Move.createFromSan({san: "Kf1", model: model, by: model.static.Colors.White});   
+  assert.strictEqual(move.to.file, model.static.Files.f, "Expected file f");
+  assert.strictEqual(move.to.rank, model.static.Ranks["1"], "Expected rank 1");
+  assert.strictEqual(move.from.file, model.static.Files.e, "Expected file e");
+  assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
 });
 
 QUnit.test("SAN O-O (king's castle) is translated correctly", function(assert) {
@@ -1085,3 +1158,6 @@ QUnit.test("SAN ambiguous knight move is translated correctly", function(assert)
   assert.strictEqual(move.from.file, model.static.Files.g, "Expected file g");
   assert.strictEqual(move.from.rank, model.static.Ranks["5"], "Expected rank 5");
 });
+
+
+

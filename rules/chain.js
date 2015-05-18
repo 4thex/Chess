@@ -4,13 +4,18 @@ var Chain = Chain || function(model) {
   var result = function(move) {
     move.piece = model.peek(move.from);
     if(!prerequisites.every(function(condition) {
-		  return condition(move);
+      var result = condition(move);
+		  return result;
 		})) {
 		  // These rules do not apply
 		  return true;
 		}
     return conditions.every(function(condition) {
-      return condition(move);
+      var result = condition(move);
+      // if(!result) {
+      //   console.log("Chain.result: "+condition+" returned false");
+      // }
+		  return result;
     });
   };
   result.and = function(condition) {

@@ -69,7 +69,7 @@ Chess.Model = Chess.Model || function constructor() {
     var to = spec.to;
     var by = spec.by;
     if(!rules.isLegal(spec)) {
-      throw "illegal move";
+      throw {message: "illegal move"};
     }
     moves.push(spec);
     var piece = that.peek(from);
@@ -132,6 +132,4 @@ Chess.Model = Chess.Model || function constructor() {
   var rules = Chess.Rules(that);
   return that;
 };
-// Initialize statics
-// if(!Chess.Model.Files) Chess.Model();
 

@@ -16,7 +16,7 @@ Chess.Rules = Chess.Rules || function(model) {
   	var knight = Chess.Rules.Knight(model);
   	var rook = Chess.Rules.Rook(model);
   	var bishop = Chess.Rules.Bishop(model);
-  	var king = Chess.Rules.King(model);
+  	var king = Chess.Rules.King(that, model);
   	var queen = Chess.Rules.Queen(model);
     return Chain(model)
       .and(fromTileIsNotEmpty)
