@@ -1,11 +1,10 @@
-Chess.Rules.King = Chess.Rules.King || function(rules, model) {
+Chess.Rules.King = Chess.Rules.King || function(model) {
 	var that = {};
   var definitions = model.static;
   
   // Pre-conditions
 	var isKing = function(move) {
 	  var result = move.piece.kind === definitions.Kinds.K;
-	  console.log("Chess.Rules.King.isKing: "+JSON.stringify(move)+" = "+result);
 	  return result;
 	};
 	
@@ -17,8 +16,9 @@ Chess.Rules.King = Chess.Rules.King || function(rules, model) {
       .when(castle)
       .and(kingHasNotMoved)
       .and(rookHasNotMoved)
-      .and(kingNotThreatened);
-    if(fileChange > 1) return castleChain(move);
+      .and(kingNotThreatened)
+      .and(squaresBetweenNotThreatened);
+    if(fileChange > 1 && rankChange === 0) return castleChain(move);
     return fileChange <= 1 && rankChange <= 1;
   };
   
@@ -26,9 +26,23 @@ Chess.Rules.King = Chess.Rules.King || function(rules, model) {
     return !model.hasMoved(move.from);
   };
   
-  var kingNotThreatened = function(move) {
+  var squaresBetweenNotThreatened = function(move) {
+    var fileChange = move.to.file - move.from.file;
+    var step = fileChange/Math.abs(fileChange);
+    var betweenSquare = {rank: move.from.rank};
+    var color = model.peek(move.from).color;
+    var file = move.from.file+step;
+    for(file = move.from.file+step; file!==move.to.file+step; file+=step) {
+      betweenSquare.file = file;
+      if(squareThreatened(betweenSquare, color)) {
+        return false;
+      }
+    }
+    return true;
+  };
+  
+  var squareThreatened = function(square, color) {
     var thread = {};
-    var kingSquare = move.from;
     thread.file = Object.getOwnPropertyNames(model.static.Files).filter(function(file) {
       thread.rank = Object.getOwnPropertyNames(model.static.Ranks).filter(function(rank) {
         var threadMove = {
@@ -36,16 +50,23 @@ Chess.Rules.King = Chess.Rules.King || function(rules, model) {
               file: model.static.Files[file],
               rank: model.static.Ranks[rank]
             },
-          to: kingSquare
+          to: square
         };
-        if(rules.isLegal(threadMove)) {
+        var threadFromPiece = model.peek(threadMove.from);
+        var rules = Chess.Rules(model);
+        if(threadFromPiece && threadFromPiece.color !== color && rules.isLegal(threadMove)) {
           return true;
         }
         return false;
       });
       return thread.rank.length > 0;
     });
-    return thread.file.length === 0 && thread.rank.length === 0;
+    return thread.file.length > 0 || thread.rank.length > 0;
+  };
+  
+  var kingNotThreatened = function(move) {
+    var color = model.peek(move.from).color;
+    return !squareThreatened(move.from, color);
   };
   
   var rookHasNotMoved = function(move) {
@@ -64,7 +85,6 @@ Chess.Rules.King = Chess.Rules.King || function(rules, model) {
     var result = [whiteKingsCastle, whiteQueensCastle, blackKingsCastle, blackQueensCastle].some(function(check) {
       return check(move);
     });
-    console.log("Chess.Rules.King.castle: "+JSON.stringify(move)+" = "+result);
     return result;
   };
   
@@ -103,6 +123,12 @@ Chess.Rules.King = Chess.Rules.King || function(rules, model) {
   }();
   return that;
 };
+
+
+
+
+
+
 
 
 

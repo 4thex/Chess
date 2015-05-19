@@ -825,10 +825,23 @@ QUnit.test("Castling is not allowed if king is in check", function(assert) {
   }
 });
 
-QUnit.test("Castling is not allowed if rook is threatened", function(assert) {
-});
-
 QUnit.test("Castling is not allowed if any square between king and rook are threatened", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"c6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Bc4", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"f6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"f4", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"Qb6", model: model, by: model.static.Colors.Black}));
+  try {
+    model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
+    assert.ok(false, "Missing expected exception");
+  } catch (exception) {
+    assert.strictEqual(exception.message, "illegal move", "Expected error when square between king and rook is threatened");
+  }
 });
 
 QUnit.test("Castling is not allowed if rook has already moved", function(assert) {
