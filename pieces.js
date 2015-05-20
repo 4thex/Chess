@@ -7,32 +7,9 @@ if(!Chess.Pieces) {
     var that = {};
     that.render = function() {
       spec.model.forEach(function(piece, index, pieces) {
-        var tileElement = document.querySelector("#tile-"+piece.tile);
-        var tileColorIsWhite = tileElement.classList.contains("white");
+        var squareElement = document.querySelector("#square-"+piece.square);
+        var squareColorIsWhite = squareElement.classList.contains("white");
         var figurine;
-        if(piece.color === Chess.Pieces.Colors.White && tileColorIsWhite
-          || piece.color === Chess.Pieces.Colors.Black && !tileColorIsWhite) {
-          switch(piece.kind) {
-            case Chess.Pieces.Kinds.K:
-              figurine = "\u2654";
-              break;
-            case Chess.Pieces.Kinds.Q:
-              figurine = "\u2655";
-              break;
-            case Chess.Pieces.Kinds.R:
-              figurine = "\u2656";
-              break;
-            case Chess.Pieces.Kinds.B:
-              figurine = "\u2657";
-              break;
-            case Chess.Pieces.Kinds.N:
-              figurine = "\u2658";
-              break;
-            case Chess.Pieces.Kinds.P:
-              figurine = "\u2659";
-              break;
-          }
-        } else {
           switch(piece.kind) {
             case Chess.Pieces.Kinds.K:
               figurine = "\u265A";
@@ -53,8 +30,21 @@ if(!Chess.Pieces) {
               figurine = "\u265F";
               break;
           }
+        var pieceElement = document.createElement("p");
+        squareElement.appendChild(pieceElement);
+        pieceElement.textContent = figurine;
+        pieceElement.classList.add("piece");
+        pieceElement.setAttribute("draggable", true);
+        if(piece.color === Chess.Pieces.Colors.White) {
+          pieceElement.classList.add("white");
+        } else {
+          pieceElement.classList.add("black");
         }
-        tileElement.textContent = figurine;
+        pieceElement.onclick = function(event) {
+          event.target.parentElement.classList.add("dragenter");
+          return false;
+        };
+
       });
     };
     that.render();
@@ -70,41 +60,42 @@ window.addEventListener("load", function() {
   var pieces = Chess.Pieces(
     {
       model: [
-        {tile: "a8", color: Colors.Black, kind: Kinds.R},
-        {tile: "b8", color: Colors.Black, kind: Kinds.N},
-        {tile: "c8", color: Colors.Black, kind: Kinds.B},
-        {tile: "d8", color: Colors.Black, kind: Kinds.Q},
-        {tile: "e8", color: Colors.Black, kind: Kinds.K},
-        {tile: "f8", color: Colors.Black, kind: Kinds.B},
-        {tile: "g8", color: Colors.Black, kind: Kinds.N},
-        {tile: "h8", color: Colors.Black, kind: Kinds.R},
-        {tile: "a7", color: Colors.Black, kind: Kinds.P},
-        {tile: "b7", color: Colors.Black, kind: Kinds.P},
-        {tile: "c7", color: Colors.Black, kind: Kinds.P},
-        {tile: "d7", color: Colors.Black, kind: Kinds.P},
-        {tile: "e7", color: Colors.Black, kind: Kinds.P},
-        {tile: "f7", color: Colors.Black, kind: Kinds.P},
-        {tile: "g7", color: Colors.Black, kind: Kinds.P},
-        {tile: "h7", color: Colors.Black, kind: Kinds.P},
+        {square: "a8", color: Colors.Black, kind: Kinds.R},
+        {square: "b8", color: Colors.Black, kind: Kinds.N},
+        {square: "c8", color: Colors.Black, kind: Kinds.B},
+        {square: "d8", color: Colors.Black, kind: Kinds.Q},
+        {square: "e8", color: Colors.Black, kind: Kinds.K},
+        {square: "f8", color: Colors.Black, kind: Kinds.B},
+        {square: "g8", color: Colors.Black, kind: Kinds.N},
+        {square: "h8", color: Colors.Black, kind: Kinds.R},
+        {square: "a7", color: Colors.Black, kind: Kinds.P},
+        {square: "b7", color: Colors.Black, kind: Kinds.P},
+        {square: "c7", color: Colors.Black, kind: Kinds.P},
+        {square: "d7", color: Colors.Black, kind: Kinds.P},
+        {square: "e7", color: Colors.Black, kind: Kinds.P},
+        {square: "f7", color: Colors.Black, kind: Kinds.P},
+        {square: "g7", color: Colors.Black, kind: Kinds.P},
+        {square: "h7", color: Colors.Black, kind: Kinds.P},
 
-        {tile: "a2", color: Colors.White, kind: Kinds.P},
-        {tile: "b2", color: Colors.White, kind: Kinds.P},
-        {tile: "c2", color: Colors.White, kind: Kinds.P},
-        {tile: "d2", color: Colors.White, kind: Kinds.P},
-        {tile: "e2", color: Colors.White, kind: Kinds.P},
-        {tile: "f2", color: Colors.White, kind: Kinds.P},
-        {tile: "g2", color: Colors.White, kind: Kinds.P},
-        {tile: "h2", color: Colors.White, kind: Kinds.P},
-        {tile: "a1", color: Colors.White, kind: Kinds.R},
-        {tile: "b1", color: Colors.White, kind: Kinds.N},
-        {tile: "c1", color: Colors.White, kind: Kinds.B},
-        {tile: "d1", color: Colors.White, kind: Kinds.Q},
-        {tile: "e1", color: Colors.White, kind: Kinds.K},
-        {tile: "f1", color: Colors.White, kind: Kinds.B},
-        {tile: "g1", color: Colors.White, kind: Kinds.N},
-        {tile: "h1", color: Colors.White, kind: Kinds.R},
+        {square: "a2", color: Colors.White, kind: Kinds.P},
+        {square: "b2", color: Colors.White, kind: Kinds.P},
+        {square: "c2", color: Colors.White, kind: Kinds.P},
+        {square: "d2", color: Colors.White, kind: Kinds.P},
+        {square: "e2", color: Colors.White, kind: Kinds.P},
+        {square: "f2", color: Colors.White, kind: Kinds.P},
+        {square: "g2", color: Colors.White, kind: Kinds.P},
+        {square: "h2", color: Colors.White, kind: Kinds.P},
+        {square: "a1", color: Colors.White, kind: Kinds.R},
+        {square: "b1", color: Colors.White, kind: Kinds.N},
+        {square: "c1", color: Colors.White, kind: Kinds.B},
+        {square: "d1", color: Colors.White, kind: Kinds.Q},
+        {square: "e1", color: Colors.White, kind: Kinds.K},
+        {square: "f1", color: Colors.White, kind: Kinds.B},
+        {square: "g1", color: Colors.White, kind: Kinds.N},
+        {square: "h1", color: Colors.White, kind: Kinds.R},
 
       ]
     }
   );
 });
+;

@@ -1,20 +1,45 @@
-.tile {
+* {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.board {
+  margin: 1em;  
+}
+
+.square {
   float: left; 
   min-width: 50px; 
   min-height: 50px; 
   line-height: 50px;
   font-size: 40px;
   text-align: center;
+  cursor: pointer;
 }
 
-.white.tile {
-  color: black; 
-  background-color: white;
+.white.square {
+  background-color: #f0d9b5;
 }
 
-.black.tile {
-  color: white; 
-  background-color: black;
+.black.square {
+  background-color: #b58863;
+}
+
+.square.dragenter {
+  background-color: #f0d9ff;
+}
+
+.piece {
+  text-shadow: 1px 1px 2px #808080;
+}
+
+.piece.white {
+  color: white;
+}
+
+.piece.black {
+  color: black;
 }
 
 .rank {
@@ -41,4 +66,20 @@
   min-height: 20px; 
   line-height: 20px; 
   text-align: center;
+}
+;
+}
+ 20px; 
+  text-align: center;
+}
+;
+}
+nter;
+}
+;
+}
+ 20px; 
+  text-align: center;
+}
+;
 }
