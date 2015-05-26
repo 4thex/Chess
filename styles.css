@@ -20,10 +20,12 @@
 
 .white.square {
   background-color: #f0d9b5;
+  color: #f0d9b5;
 }
 
 .black.square {
   background-color: #b58863;
+  color: #b58863;
 }
 
 .square.dragenter {

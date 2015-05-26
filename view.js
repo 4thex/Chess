@@ -6,6 +6,42 @@ if(!Chess.View) {
   Chess.View = function(spec) {
     var that = {};
     var files = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    var createSquare = function(container, fileIndex, rank) {
+      var square = document.createElement("div");
+      square.ondragover = function(event) {
+        return false;
+      };
+      square.ondragenter = function(event) {
+        event.target.classList.add("dragenter");
+        return false;
+      };
+      square.ondragleave = function(event) {
+        event.target.classList.remove("dragenter");
+        return false;
+      };
+      square.onmouseover = function(event) {
+        event.target.classList.add("dragenter");
+        return false;
+      };
+      square.onmouseout = function(event) {
+        event.target.classList.remove("dragenter");
+        return false;
+      };
+      container.appendChild(square);
+      if((rank + fileIndex) % 2) {
+        square.classList.add("black");
+      } else {
+        square.classList.add("white");
+      }
+      square.classList.add("square");
+      square.setAttribute("id", "square-"+files[fileIndex]+rank);
+      square.ondragend = function(event) {
+        event.target.style.display = "block";
+        var from = event.dataTransfer.getData("text/plain");
+        console.log(from);
+      };
+      return square;
+    };
     that.render = function(element) {
       var document = element.ownerDocument;
       var container = document.createElement("div");
@@ -19,34 +55,7 @@ if(!Chess.View) {
         rankElement.classList.add("rank");
         
         for(fileIndex=0; fileIndex<files.length; ++fileIndex) {
-          var square = document.createElement("div");
-          square.ondragover = function(event) {
-            return false;
-          };
-          square.ondragenter = function(event) {
-            event.target.classList.add("dragenter");
-            return false;
-          };
-          square.ondragleave = function(event) {
-            event.target.classList.remove("dragenter");
-            return false;
-          };
-          square.onmouseover = function(event) {
-            event.target.classList.add("dragenter");
-            return false;
-          };
-          square.onmouseout = function(event) {
-            event.target.classList.remove("dragenter");
-            return false;
-          };
-          container.appendChild(square);
-          if((rank + fileIndex) % 2) {
-            square.classList.add("black");
-          } else {
-            square.classList.add("white");
-          }
-          square.classList.add("square");
-          square.setAttribute("id", "square-"+files[fileIndex]+rank);
+          createSquare(container, fileIndex, rank);
         }
       }
       var cornerElement = document.createElement("div");
@@ -67,4 +76,4 @@ if(!Chess.View) {
 window.addEventListener("load", function() {
   var body = document.querySelector("body");
   var view = Chess.View({element: body});
-});;
+});
