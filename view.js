@@ -35,16 +35,24 @@ if(!Chess.View) {
       }
       square.classList.add("square");
       square.setAttribute("id", "square-"+files[fileIndex]+rank);
-      square.ondragend = function(event) {
+      square.location = {file: fileIndex, rank:rank-1};
+      square.ondrop = function(event) {
         event.target.style.display = "block";
-        var from = event.dataTransfer.getData("text/plain");
-        console.log(from);
+        var piece = JSON.parse(event.dataTransfer.getData("text/plain"));
+        var from = piece.square;
+        var to = event.target.location;
+        spec.model.move({from: piece.square, to: to});
+        that.render(spec.element);
       };
       return square;
     };
     that.render = function(element) {
       var document = element.ownerDocument;
-      var container = document.createElement("div");
+      var container = element.querySelector(".board");
+      if(container) {
+        element.removeChild(container);
+      }
+      container = document.createElement("div");
       container.classList.add("board");
       element.appendChild(container);
       var fileIndex;
@@ -67,13 +75,17 @@ if(!Chess.View) {
         file.textContent = files[fileIndex];
         file.classList.add("file");
       }
+      that.pieces.render();
     };
+    that.pieces = spec.pieces({model: spec.model});
     that.render(spec.element);
     return that;
   };
 }
 
 window.addEventListener("load", function() {
+  var model = Chess.Model();
   var body = document.querySelector("body");
-  var view = Chess.View({element: body});
+  var view = Chess.View({element: body, model: model, pieces: Chess.Pieces});
 });
+

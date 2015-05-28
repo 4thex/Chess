@@ -7,7 +7,8 @@ if(!Chess.Pieces) {
     var that = {};
     that.render = function() {
       spec.model.forEach(function(piece) {
-        var squareElement = document.querySelector("#square-"+piece.square);
+        var square = piece.square;
+        var squareElement = document.querySelector("#square-"+spec.model.static.Files.nameFor(square.file)+spec.model.static.Ranks.nameFor(square.rank));
         var squareColorIsWhite = squareElement.classList.contains("white");
         var figurine;
           switch(piece.kind) {
@@ -48,19 +49,19 @@ if(!Chess.Pieces) {
         pieceElement.ondragstart = function(event) {
           event.dataTransfer.effectAllowed = "move";
           event.dataTransfer.dropEffect = "move";
-          event.dataTransfer.setData("text/plain", piece.square);
+          event.dataTransfer.setData("text/plain", JSON.stringify(piece));
         };
         pieceElement.ondrag = function(event) {
           event.target.style.display = "none";
         };
       });
     };
-    that.render();
     return that;
   };
 }
 
-window.addEventListener("load", function() {
-  var model = Chess.Model();
-  var pieces = Chess.Pieces({model: model});
-});
+// window.addEventListener("load", function() {
+//   var model = Chess.Model();
+//   var pieces = Chess.Pieces({model: model});
+// });
+;

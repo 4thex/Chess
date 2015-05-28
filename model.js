@@ -114,13 +114,15 @@ Chess.Model = Chess.Model || function constructor() {
     return undefined;
   };
   that.forEach = function(callback) {
+    var result = [];
     Object.getOwnPropertyNames(static.Files).forEach(function(file) {
       Object.getOwnPropertyNames(static.Ranks).forEach(function(rank) {
         var square = {rank: static.Ranks[rank], file: static.Files[file]};
         var piece = that.peek(square);
         if(piece) {
-          piece.square = file+rank;
-          callback(piece);    
+          piece.square = square;
+          result.push(piece);
+          callback(piece, result.length-1, result);    
         }
       });
     });
