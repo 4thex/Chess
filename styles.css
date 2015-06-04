@@ -69,19 +69,12 @@
   line-height: 20px; 
   text-align: center;
 }
-;
+
+.hidden {
+  display: none;
 }
- 20px; 
-  text-align: center;
-}
-;
-}
-nter;
-}
-;
-}
- 20px; 
-  text-align: center;
-}
-;
+
+.message {
+  background-color: red;
+  color: white;
 }

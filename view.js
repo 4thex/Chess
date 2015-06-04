@@ -41,7 +41,14 @@ if(!Chess.View) {
         var piece = JSON.parse(event.dataTransfer.getData("text/plain"));
         var from = piece.square;
         var to = event.target.location;
-        spec.model.move({from: piece.square, to: to});
+        if(!to) {
+          to = event.target.parentNode.location;
+        }
+        try {
+          spec.model.move({from: piece.square, to: to});
+        } catch (error) {
+          
+        }
         that.render(spec.element);
       };
       return square;

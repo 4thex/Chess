@@ -69,7 +69,11 @@ Chess.Model = Chess.Model || function constructor() {
     var to = spec.to;
     var by = spec.by;
     if(!rules.isLegal(spec)) {
-      throw {message: "illegal move"};
+      if(spec.error) {
+        var messageView = Chess.MessageView(spec.error);
+        messageView.show();
+      }
+      throw {message: "illegal move", reason: spec.error};
     }
     moves.push(spec);
     var piece = that.peek(from);
@@ -146,5 +150,6 @@ Chess.Model = Chess.Model || function constructor() {
   var rules = Chess.Rules(that);
   return that;
 };
+
 
 

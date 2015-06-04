@@ -988,6 +988,31 @@ QUnit.test("Queen cannot move different count of file and rank unless one is 0",
 	assert.ok(!rules.isLegal(move), "Moving 3 ranks up, and 2 files to the left is illegal");
 });
 
+QUnit.test("Queen cannot jump over another piece", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(square) {
+	  if(square.rank === model.static.Ranks[1] && square.file === model.static.Files.d) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.Q};
+	  }
+	  if(square.rank === model.static.Ranks[2] && square.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.P};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[1],
+				file: model.static.Files.d
+			},
+			to: {
+				rank: model.static.Ranks[3],
+				file: model.static.Files.f
+			}
+	};
+  assert.ok(!rules.isLegal(move), "Queen cannot jump another piece");
+});
+
 QUnit.module("Moves");
 QUnit.test("SAN [file rank] pawn-move is translated correctly", function(assert) {
   var model = Chess.Model();
@@ -1171,6 +1196,8 @@ QUnit.test("SAN ambiguous knight move is translated correctly", function(assert)
   assert.strictEqual(move.from.file, model.static.Files.g, "Expected file g");
   assert.strictEqual(move.from.rank, model.static.Ranks["5"], "Expected rank 5");
 });
+
+
 
 
 

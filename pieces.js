@@ -59,9 +59,3 @@ if(!Chess.Pieces) {
     return that;
   };
 }
-
-// window.addEventListener("load", function() {
-//   var model = Chess.Model();
-//   var pieces = Chess.Pieces({model: model});
-// });
-;
