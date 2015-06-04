@@ -77,4 +77,8 @@
 .message {
   background-color: red;
   color: white;
+  position: absolute;
+  z-index: 99;
+  cursor: pointer;
+  vertical-align: middle;
 }

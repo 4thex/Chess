@@ -71,6 +71,7 @@ Chess.Model = Chess.Model || function constructor() {
     if(!rules.isLegal(spec)) {
       if(spec.error) {
         var messageView = Chess.MessageView(spec.error);
+        messageView.message = spec.error;
         messageView.show();
       }
       throw {message: "illegal move", reason: spec.error};
