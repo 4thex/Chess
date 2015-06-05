@@ -2,13 +2,20 @@ var Chess = Chess || {};
 Chess.Rules = Chess.Rules || function(model) {
 	var that = {};
 	var fromTileIsNotEmpty = function(move) {
-	  return move.piece;
+	  var result = move.piece;
+	  if(!result) {
+	    move.error = "You cannot move from an empty square";
+	  }
+	  return result;
 	};
 	var toTileDoesNotHavePieceOfOwnColor = function(move) {
 	  var toPiece = model.peek(move.to);
 	  if(!toPiece) return true;
-	  if(toPiece.color === move.piece.color) return false;
-	  return true;
+	  var result = toPiece.color !== move.piece.color;
+	  if(!result) {
+	    move.error = "You cannot capture own piece";
+	  }
+	  return result;
 	};
 	that.isLegal = function() {
   	var blackPawn = Chess.Rules.BlackPawn(model);

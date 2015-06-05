@@ -13,7 +13,11 @@ Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
   var straightInAnyDirection = function(move) {
     var fileChange = Math.abs(move.to.file - move.from.file);
     var rankChange = Math.abs(move.to.rank - move.from.rank);
-    return fileChange === 0 || rankChange === 0 || fileChange === rankChange;
+    var result = fileChange === 0 || rankChange === 0 || fileChange === rankChange;
+    if(!result) {
+      move.error = "The queen can only move in straight lines";
+    }
+    return result;
   };
   
   var noPieceBetween = function(move) {
@@ -28,6 +32,7 @@ Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
       do {
         file += fileDirection;
         if(model.peek({file: file, rank:rank})) {
+          move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
           return false;
         }
       } while(file < move.to.file);
@@ -37,6 +42,7 @@ Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
       do {
         rank += rankDirection;
         if(model.peek({file: file, rank:rank})) {
+          move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
           return false;
         }
       } while(rank < move.to.rank);

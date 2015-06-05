@@ -14,28 +14,44 @@ Chess.Rules.WhitePawn = Chess.Rules.WhitePawn || function(model) {
 	// Rules
   var isChangingFileOnCapture = function(move) {
     var toPiece = model.peek(move.to);
+    var result;
     if(!toPiece) {
-      return move.from.file === move.to.file;
+      result = move.from.file === move.to.file;
+      if(!result) {
+        move.error = "Pawn can only change file on capture";
+      }
+      return result;
     }
     if(Math.abs(move.to.file-move.from.file) === 1
       && move.to.rank - move.from.rank === 1) {
-      return toPiece.color === definitions.Colors.Black;
+      return true;
     }
+    move.error = "Pawn can only change one file on capture";
     return false;
   };
   
 	var onlyIncreasesTwoFromRank2 = function(move) {
-		if(move.to.rank - move.from.rank > 2) return false;
-		if(move.from.rank === Chess.Model.Ranks[2]) {
-      return move.to.rank - move.from.rank <= 2;
-		} else {
-		  return move.to.rank - move.from.rank === 1;
+	  var result;
+		if(move.to.rank - move.from.rank > 2) {
+		  move.error = "Pawn can not move more than 2 ranks";
+		  return false;
 		}
+		if(move.from.rank !== Chess.Model.Ranks[2]) {
+		  result = move.to.rank - move.from.rank === 1;
+		  move.error = "Pawn can only move one rank unless moving from rank 2";
+		} else {
+		  result = true;
+		}
+		
+		return result;
 	};
 	
 	var increasesRank = function(move) {
-		if(move.to.rank < move.from.rank) return false;
-		return true;
+		var result = move.to.rank > move.from.rank;
+		if(!result) {
+		  move.error = "White pawn can only advance in rank";
+		}
+		return result;
 	};
 
   that.isLegal = function() {

@@ -46,10 +46,15 @@ if(!Chess.View) {
         }
         try {
           spec.model.move({from: piece.square, to: to});
+          that.render(spec.element);
         } catch (error) {
-          
+          error.reason = error.reason || "unknown reason";
+          var messageView = Chess.MessageView({message: error.message+":<br/>"+error.reason, x: event.clientX, y: event.clientY});
+          // messageView.message = error;
+          messageView.show(function() {
+            that.render(spec.element);
+          });
         }
-        that.render(spec.element);
       };
       return square;
     };
