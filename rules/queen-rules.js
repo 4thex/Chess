@@ -35,7 +35,7 @@ Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
           move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
           return false;
         }
-      } while(file < move.to.file);
+      } while(file !== move.to.file);
     } else if(fileChange === 0) {
       // Vertical
       file = move.from.file;
@@ -45,7 +45,7 @@ Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
           move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
           return false;
         }
-      } while(rank < move.to.rank);
+      } while(rank !== move.to.rank);
     } else {
       // Diagonal
       rank = move.from.rank;
@@ -56,7 +56,7 @@ Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
           move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
           return false;
         }
-      } while(file < move.to.file);
+      } while(file !== move.to.file);
     }
     return true;
   };

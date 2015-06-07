@@ -1197,6 +1197,60 @@ QUnit.test("SAN ambiguous knight move is translated correctly", function(assert)
   assert.strictEqual(move.from.rank, model.static.Ranks["5"], "Expected rank 5");
 });
 
+QUnit.module("Persister");
+QUnit.test("Persister can store a string", function(assert) {
+  var persister = Chess.Persister({name: test});
+  persister.save("Store this", function() {
+    persister.load(function(spec) {
+      assert.ok(spec.item === "Store this");
+    });
+  });
+});
+
+QUnit.test("Persister can store a number", function(assert) {
+  var persister = Chess.Persister({name: test});
+  persister.save(5, function() {
+    persister.load(function(spec) {
+      assert.ok(spec.item === 5);
+    });
+  });
+});
+
+QUnit.test("Persister can store a boolean", function(assert) {
+  var persister = Chess.Persister({name: test});
+  persister.save(true, function() {
+    persister.load(function(spec) {
+      assert.ok(spec.item);
+    });
+  });
+});
+
+QUnit.test("Persister can store an array", function(assert) {
+  var persister = Chess.Persister({name: test});
+  persister.save(["some", 5, true], function() {
+    persister.load(function(spec) {
+      assert.ok(spec.item[0] === "some");
+      assert.ok(spec.item[1] === 5);
+      assert.ok(spec.item[2]);
+    });
+  });
+});
+
+QUnit.test("Persister can store a complex object", function(assert) {
+  var persister = Chess.Persister({name: test});
+  persister.save({some: {second: "yeah"}, other: "ok"}, function() {
+    persister.load(function(spec) {
+      assert.deepEqual(spec.item, {some: {second: "yeah"}, other: "ok"});
+    });
+  });
+});
+
+
+
+
+
+
+
 
 
 
