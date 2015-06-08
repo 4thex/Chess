@@ -9,7 +9,7 @@ Chess.Persister = Chess.Persister || function(spec) {
   that.save = function(item, callback) {
     var storage = window.localStorage;
     storage.setItem(spec.name, JSON.stringify(item));
-    callback();
+    if(callback) callback();
   };
   return that;
 };

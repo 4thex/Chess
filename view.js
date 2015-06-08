@@ -96,7 +96,8 @@ if(!Chess.View) {
 }
 
 window.addEventListener("load", function() {
-  var model = Chess.Model();
+  var persister = Chess.Persister({name: "state"});
+  var model = Chess.Model({persister: persister});
   var body = document.querySelector("body");
   var view = Chess.View({element: body, model: model, pieces: Chess.Pieces});
 });
