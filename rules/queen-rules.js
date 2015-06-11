@@ -27,37 +27,14 @@ Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
     var rankDirection = rankChange/Math.abs(rankChange);
     var file = move.from.file;
     var rank = move.from.rank;
-    if(rankChange === 0) {
-      // Horizontal
-      do {
-        file += fileDirection;
-        if(model.peek({file: file, rank:rank})) {
-          move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
-          return false;
-        }
-      } while(file !== move.to.file);
-    } else if(fileChange === 0) {
-      // Vertical
-      file = move.from.file;
-      do {
-        rank += rankDirection;
-        if(model.peek({file: file, rank:rank})) {
-          move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
-          return false;
-        }
-      } while(rank !== move.to.rank);
-    } else {
-      // Diagonal
-      rank = move.from.rank;
-      do {
-        file += fileDirection;
-        rank += rankDirection;
-        if(model.peek({file: file, rank:rank})) {
-          move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
-          return false;
-        }
-      } while(file !== move.to.file);
-    }
+    do {
+      if(fileDirection) file += fileDirection;
+      if(rankDirection) rank += rankDirection;
+      if(!(file === move.to.file && rank === move.to.rank) && model.peek({file: file, rank:rank})) {
+        move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
+        return false;
+      }
+    } while(!(file === move.to.file && rank === move.to.rank));
     return true;
   };
 

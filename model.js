@@ -159,7 +159,7 @@ Chess.Model = Chess.Model || function constructor(spec) {
     return board;
   }();
 
-  var persister = spec.persister;
+  var persister = spec && spec.persister;
     
   if(persister) {
     persister.load(function(result) {

@@ -11,7 +11,11 @@ Chess.Rules.Bishop = Chess.Rules.Bishop || function(model) {
   var rankAndFileChangeIsEqual = function(move) {
     var fileChange = Math.abs(move.to.file - move.from.file);
     var rankChange = Math.abs(move.to.rank - move.from.rank);
-    return fileChange === rankChange;
+    var result = fileChange === rankChange;
+    if(!result) {
+      move.error = "Bishop can only move diagonally";
+    }
+    return result;
   };
   
   var noPieceBetween = function(move) {
@@ -24,10 +28,11 @@ Chess.Rules.Bishop = Chess.Rules.Bishop || function(model) {
     do {
       file += fileDirection;
       rank += rankDirection;
-      if(model.peek({file: file, rank:rank})) {
+      if(file !== move.to.file && model.peek({file: file, rank:rank})) {
+        move.error = "Cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
         return false;
       }
-    } while(file < move.to.file);
+    } while(file !== move.to.file);
     return true;
   };
   

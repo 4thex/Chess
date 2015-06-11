@@ -11,7 +11,11 @@ Chess.Rules.Rook = Chess.Rules.Rook || function(model) {
   var rankOrFileChangeIsZero = function(move) {
     var fileChange = Math.abs(move.to.file - move.from.file);
     var rankChange = Math.abs(move.to.rank - move.from.rank);
-    return fileChange === 0 || rankChange === 0;
+    var result = fileChange === 0 || rankChange === 0;
+    if(!result) {
+      move.error = "Rook can only move vertically, or horizontally";
+    }
+    return result;
   };
   
   var noPieceBetween = function(move) {
@@ -22,18 +26,13 @@ Chess.Rules.Rook = Chess.Rules.Rook || function(model) {
     var file = move.from.file;
     var rank = move.from.rank;
     do {
-      file += fileDirection;
+      if(fileDirection) file += fileDirection;
+      if(rankDirection) rank += rankDirection;
       if(model.peek({file: file, rank:rank})) {
+        move.error = "Cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
         return false;
       }
-    } while(file < move.to.file);
-    file = move.from.file;
-    do {
-      rank += rankDirection;
-      if(model.peek({file: file, rank:rank})) {
-        return false;
-      }
-    } while(rank < move.to.rank);
+    } while(!(file === move.to.file && rank === move.to.rank));
     return true;
   };
   

@@ -561,13 +561,17 @@ QUnit.test("Rook cannot move both rank and file", function(assert) {
 			}
 	};
 	assert.ok(!rules.isLegal(move), "Moving 1 rank up and 1 file to the right is illegal");
+	assert.equal(move.error, "Rook can only move vertically, or horizontally", "Verify error message");
 	move.to.file = model.static.Files.c;
 	assert.ok(!rules.isLegal(move), "Moving 1 rank up and 1 file to the left is illegal");
+	assert.equal(move.error, "Rook can only move vertically, or horizontally", "Verify error message");
 	move.to.rank = model.static.Ranks[3];
 	move.to.file = model.static.Files.e;
 	assert.ok(!rules.isLegal(move), "Moving 1 rank down and 1 file to the right is illegal");
+	assert.equal(move.error, "Rook can only move vertically, or horizontally", "Verify error message");
 	move.to.file = model.static.Files.c;
 	assert.ok(!rules.isLegal(move), "Moving 1 rank down and 1 file to the left is illegal");
+	assert.equal(move.error, "Rook can only move vertically, or horizontally", "Verify error message");
 });
 
 QUnit.test("Rook cannot move past any piece in the way", function(assert) {
@@ -596,9 +600,11 @@ QUnit.test("Rook cannot move past any piece in the way", function(assert) {
 			}
 	};
 	assert.ok(!rules.isLegal(move), "Moving past a piece on same file is illegal");
+	assert.equal(move.error, "Cannot jump over piece on d5", "Verify error message");
 	move.to.rank = model.static.Ranks[4];
 	move.to.file = model.static.Files.f;
 	assert.ok(!rules.isLegal(move), "Moving past a piece on same rank is illegal");
+	assert.equal(move.error, "Cannot jump over piece on e4", "Verify error message");
 });
 
 QUnit.test("Rook can move 7 ranks", function(assert) {
@@ -700,6 +706,7 @@ QUnit.test("Bishop must move same rank and file distance", function(assert) {
 	
 	move.to.rank = model.static.Ranks[2];
 	assert.ok(!rules.isLegal(move), "Moving 7 files to the left and 6 ranks down is illegal");
+	assert.equal(move.error, "Bishop can only move diagonally", "Verify correct error message");
 });
 
 QUnit.test("Bishop cannot move past any piece in the way", function(assert) {
@@ -712,6 +719,9 @@ QUnit.test("Bishop cannot move past any piece in the way", function(assert) {
 	  if(tile.rank === model.static.Ranks[3] && tile.file === model.static.Files.c) {
 	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
 	  }
+	  if(tile.rank === model.static.Ranks[8] && tile.file === model.static.Files.h) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.B};
+	  }
     return undefined;
 	};
 	var move = {
@@ -720,11 +730,24 @@ QUnit.test("Bishop cannot move past any piece in the way", function(assert) {
 				file: model.static.Files.a
 			},
 			to: {
-				rank: model.static.Ranks[8],
-				file: model.static.Files.h
+				rank: model.static.Ranks[7],
+				file: model.static.Files.g
 			}
 	};
-	assert.ok(!rules.isLegal(move), "Moving past a piece in the way is illegal");
+	assert.ok(!rules.isLegal(move), "Moving past a piece in the way moving up rank and to higher file is illegal");
+	
+	move = {
+			from: {
+				rank: model.static.Ranks[8],
+				file: model.static.Files.h
+			},
+			to: {
+				rank: model.static.Ranks[1],
+				file: model.static.Files.a
+			}
+	};
+	assert.ok(!rules.isLegal(move), "Moving past a piece in the way moving down rank and to lower file is illegal");
+	assert.equal(move.error, "Cannot jump over piece on c3", "Verify error message");
 });
 
 QUnit.test("King cannot move more than one file and/or one rank", function(assert) {
@@ -821,7 +844,7 @@ QUnit.test("Castling is not allowed if king is in check", function(assert) {
     model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
     assert.ok(false, "Missing expected exception");
   } catch (exception) {
-    assert.strictEqual(exception.message, "illegal move", "Expected error when king is in check");
+    assert.strictEqual(exception.message, "Illegal move", "Expected error when king is in check");
   }
 });
 
@@ -840,7 +863,7 @@ QUnit.test("Castling is not allowed if any square between king and rook are thre
     model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
     assert.ok(false, "Missing expected exception");
   } catch (exception) {
-    assert.strictEqual(exception.message, "illegal move", "Expected error when square between king and rook is threatened");
+    assert.strictEqual(exception.message, "Illegal move", "Expected error when square between king and rook is threatened");
   }
 });
 
@@ -861,7 +884,7 @@ QUnit.test("Castling is not allowed if rook has already moved", function(assert)
     model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
     assert.ok(false, "Missing expected exception");
   } catch (exception) {
-    assert.strictEqual(exception.message, "illegal move", "Expected error when rook has already moved");
+    assert.strictEqual(exception.message, "Illegal move", "Expected error when rook has already moved");
   }
 });
 
@@ -882,7 +905,7 @@ QUnit.test("Castling is not allowed if king has already moved", function(assert)
     model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: model.static.Colors.White}));
     assert.ok(false, "Missing expected exception");
   } catch (exception) {
-    assert.strictEqual(exception.message, "illegal move", "Expected error when king has already moved");
+    assert.strictEqual(exception.message, "Illegal move", "Expected error when king has already moved");
   }
 });
 
@@ -1244,14 +1267,4 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
-
-
-
-
-
-
-
-
-
-
 
