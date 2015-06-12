@@ -17,28 +17,28 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
       .and(kingHasNotMoved)
       .and(rookHasNotMoved)
       .and(kingNotThreatened)
-      .and(squaresBetweenNotThreatened);
-    if(fileChange > 1 && rankChange === 0) return castleChain(move);
-    return fileChange <= 1 && rankChange <= 1;
+      .and(squareBetweenEmpty)
+      .and(squareBetweenNotThreatened);
+    return (fileChange <= 1 && rankChange <= 1) || castleChain(move);
   };
   
   var kingHasNotMoved = function(move) {
     return !model.hasMoved(move.from);
   };
   
-  var squaresBetweenNotThreatened = function(move) {
+  var squareBetweenNotThreatened = function(move) {
     var fileChange = move.to.file - move.from.file;
     var step = fileChange/Math.abs(fileChange);
-    var betweenSquare = {rank: move.from.rank};
+    var betweenSquare = {rank: move.from.rank, file: move.from.file+step};
     var color = model.peek(move.from).color;
-    var file = move.from.file+step;
-    for(file = move.from.file+step; file!==move.to.file+step; file+=step) {
-      betweenSquare.file = file;
-      if(squareThreatened(betweenSquare, color)) {
-        return false;
-      }
-    }
-    return true;
+    return !squareThreatened(betweenSquare, color);
+  };
+  
+  var squareBetweenEmpty = function(move) {
+    var fileChange = move.to.file - move.from.file;
+    var step = fileChange/Math.abs(fileChange);
+    var betweenSquare = {rank: move.from.rank, file: move.from.file+step};
+    return !model.peek(betweenSquare);
   };
   
   var squareThreatened = function(square, color) {
@@ -99,7 +99,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
     return move.from.rank === model.static.Ranks["1"]
       && move.from.file === model.static.Files.e
       && move.to.rank === model.static.Ranks["1"]
-      && move.to.file === model.static.Files.b;
+      && move.to.file === model.static.Files.c;
   };
   
   var blackKingsCastle = function(move) {
@@ -113,7 +113,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
     return move.from.rank === model.static.Ranks["8"]
       && move.from.file === model.static.Files.e
       && move.to.rank === model.static.Ranks["8"]
-      && move.to.file === model.static.Files.b;
+      && move.to.file === model.static.Files.c;
   };
   
   that.isLegal = function() {
@@ -123,8 +123,6 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   }();
   return that;
 };
-
-
 
 
 

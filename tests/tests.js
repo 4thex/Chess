@@ -923,6 +923,22 @@ QUnit.test("Castling is allowed if neither king nor rook have moved yet", functi
   assert.deepEqual(model.peek({file: model.static.Files.f, rank: model.static.Ranks["1"]}), {color: model.static.Colors.White, kind: model.static.Kinds.R}, "Expected white rook");
 });
 
+QUnit.test("King cannot jump over a piece when castling", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.move(Chess.Move.createFromSan({san:"Nc3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e6", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"d3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: model.static.Colors.Black}));
+  model.move(Chess.Move.createFromSan({san:"Bd2", model: model, by: model.static.Colors.White}));
+  var castle = Chess.Move.createFromSan({san:"O-O-O", model: model, by: model.static.Colors.White});
+  assert.throws(function() {
+    model.move(castle);
+  }, function(error) {
+    return error.message === "Illegal move";
+  }, "Expect illegal move");
+});
+
 QUnit.test("Queen can move straight in all directions", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
@@ -1105,7 +1121,7 @@ QUnit.test("SAN O-O-O (queen's castle) is translated correctly", function(assert
 	};
 
   var move = Chess.Move.createFromSan({san: "O-O-O", model: model, by: model.static.Colors.White});   
-  assert.strictEqual(move.to.file, model.static.Files.b, "Expected file b");
+  assert.strictEqual(move.to.file, model.static.Files.c, "Expected file b");
   assert.strictEqual(move.to.rank, model.static.Ranks["1"], "Expected rank 1");
   assert.strictEqual(move.from.file, model.static.Files.e, "Expected file e");
   assert.strictEqual(move.from.rank, model.static.Ranks["1"], "Expected rank 1");
@@ -1267,4 +1283,12 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
+
+
+
+
+
+
+
+
 

@@ -29,7 +29,7 @@ Chess.Move.createFromSan = function createFromSan(spec) {
       rank: model.static.Ranks["1"]
     };
     if(split[2]) { // Queen's castle
-      that.to.file = model.static.Files.b;
+      that.to.file = model.static.Files.c;
     }  else { // King's castle
       that.to.file = model.static.Files.g;
     }
