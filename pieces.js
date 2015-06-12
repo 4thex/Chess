@@ -54,6 +54,12 @@ if(!Chess.Pieces) {
         pieceElement.ondrag = function(event) {
           event.target.style.display = "none";
         };
+        pieceElement.ondragend = function(event) {
+          if(event.dataTransfer.dropEffect === "none") {
+            event.target.style.display = "block";
+          }
+          
+        };
       });
     };
     return that;
