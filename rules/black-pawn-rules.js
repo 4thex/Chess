@@ -33,6 +33,14 @@ Chess.Rules.BlackPawn = Chess.Rules.BlackPawn || function(model) {
 		}
 	};
 	
+	var noPieceBetween = function(move) {
+	  if(move.from.rank !== model.static.Ranks[7]) return true;
+	  if(move.to.rank === model.static.Ranks[5]) {
+	    return !model.peek({file: move.from.file, rank: model.static.Ranks[6]});
+	  }
+	  return true;
+	};
+	
 	var decreasesRank = function(move) {
 		if(move.from.rank < move.to.rank) return false;
 		return true;
@@ -44,6 +52,7 @@ Chess.Rules.BlackPawn = Chess.Rules.BlackPawn || function(model) {
       .when(isBlack)
       .and(decreasesRank)
       .and(onlyDecreasesTwoFromRank7)
+      .and(noPieceBetween)
       .and(isChangingFileOnCapture);
   }();
   return that;

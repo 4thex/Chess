@@ -19,7 +19,10 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
       .and(kingNotThreatened)
       .and(squareBetweenEmpty)
       .and(squareBetweenNotThreatened);
-    return (fileChange <= 1 && rankChange <= 1) || castleChain(move);
+    if(castle(move)) {
+      return castleChain(move);
+    }
+    return (fileChange <= 1 && rankChange <= 1);
   };
   
   var kingHasNotMoved = function(move) {
@@ -29,9 +32,18 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   var squareBetweenNotThreatened = function(move) {
     var fileChange = move.to.file - move.from.file;
     var step = fileChange/Math.abs(fileChange);
-    var betweenSquare = {rank: move.from.rank, file: move.from.file+step};
+    var betweenSquares = [
+      {rank: move.from.rank, file: move.from.file+step},
+      {rank: move.from.rank, file: move.from.file+(step*2)},
+    ];
     var color = model.peek(move.from).color;
-    return !squareThreatened(betweenSquare, color);
+    var result = !betweenSquares.some(function(square) {
+      return squareThreatened(square, color);
+    });
+    if(!result) {
+      move.error = "A square between king and rook is threatened";
+    }
+    return result;
   };
   
   var squareBetweenEmpty = function(move) {
@@ -123,9 +135,6 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   }();
   return that;
 };
-
-
-
 
 
 

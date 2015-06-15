@@ -46,6 +46,14 @@ Chess.Rules.WhitePawn = Chess.Rules.WhitePawn || function(model) {
 		return result;
 	};
 	
+	var noPieceBetween = function(move) {
+	  if(move.from.rank !== model.static.Ranks[2]) return true;
+	  if(move.to.rank === model.static.Ranks[4]) {
+	    return !model.peek({file: move.from.file, rank: model.static.Ranks[3]});
+	  }
+	  return true;
+	};
+	
 	var increasesRank = function(move) {
 		var result = move.to.rank > move.from.rank;
 		if(!result) {
@@ -60,6 +68,7 @@ Chess.Rules.WhitePawn = Chess.Rules.WhitePawn || function(model) {
       .when(isWhite)
       .and(increasesRank)
       .and(onlyIncreasesTwoFromRank2)
+      .and(noPieceBetween)
       .and(isChangingFileOnCapture);
   }();
   return that;

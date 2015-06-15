@@ -296,11 +296,11 @@ QUnit.test("Black pawn can only do 'en passant' capture on the next turn after o
 QUnit.test("Black pawn can change file on capture", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
-	model.peek = function(tile) {
-	  if(tile.rank === model.static.Ranks[4] && tile.file === model.static.Files.a) {
+	model.peek = function(square) {
+	  if(square.rank === model.static.Ranks[4] && square.file === model.static.Files.a) {
 	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
 	  }
-	  if(tile.rank === model.static.Ranks[3] && tile.file === model.static.Files.b) {
+	  if(square.rank === model.static.Ranks[3] && square.file === model.static.Files.b) {
 	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
 	  }
     return undefined;
@@ -343,6 +343,48 @@ QUnit.test("Black pawn can change file on capture", function(assert) {
 			}
 	};  
   assert.ok(!rules.isLegal(move), "Can only move one rank when capturing changing file");
+});
+
+QUnit.test("Pawn cannot jump over piece", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(square) {
+	  if(square.rank === model.static.Ranks[2] && square.file === model.static.Files.a) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.P};
+	  }
+	  if(square.rank === model.static.Ranks[3] && square.file === model.static.Files.a) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.R};
+	  }
+	  if(square.rank === model.static.Ranks[7] && square.file === model.static.Files.b) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
+	  }
+	  if(square.rank === model.static.Ranks[6] && square.file === model.static.Files.b) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.N};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: model.static.Ranks[2],
+				file: model.static.Files.a
+			},
+			to: {
+				rank: model.static.Ranks[4],
+				file: model.static.Files.a
+			}
+	};
+  assert.notOk(rules.isLegal(move), "Expect illegal move");
+	move = {
+			from: {
+				rank: model.static.Ranks[7],
+				file: model.static.Files.b
+			},
+			to: {
+				rank: model.static.Ranks[5],
+				file: model.static.Files.b
+			}
+	};
+  assert.notOk(rules.isLegal(move), "Expect illegal move");
 });
 
 QUnit.test("Knight can move 2 ranks, and 1 file", function(assert) {
@@ -829,6 +871,10 @@ QUnit.test("King can move one file and/or one rank in all directions", function(
 	assert.ok(rules.isLegal(move), "Moving one rank up, and one file to the left is legal");
 });
 
+QUnit.test("King cannot move to a threatened square", function(assert) {
+  
+});
+
 QUnit.test("Castling is not allowed if king is in check", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
@@ -855,7 +901,7 @@ QUnit.test("Castling is not allowed if any square between king and rook are thre
   model.move(Chess.Move.createFromSan({san:"c6", model: model, by: model.static.Colors.Black}));
   model.move(Chess.Move.createFromSan({san:"Bc4", model: model, by: model.static.Colors.White}));
   model.move(Chess.Move.createFromSan({san:"e5", model: model, by: model.static.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: model.static.Colors.White}));
+  model.move(Chess.Move.createFromSan({san:"Nh3", model: model, by: model.static.Colors.White}));
   model.move(Chess.Move.createFromSan({san:"f6", model: model, by: model.static.Colors.Black}));
   model.move(Chess.Move.createFromSan({san:"f4", model: model, by: model.static.Colors.White}));
   model.move(Chess.Move.createFromSan({san:"Qb6", model: model, by: model.static.Colors.Black}));
