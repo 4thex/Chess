@@ -5,7 +5,7 @@ Chess.Rules.Knight = Chess.Rules.Knight || function(model) {
   // Pre-conditions
 	var isKnight = function(move) {
 	  var result = move.piece.kind === definitions.Kinds.N;
-	  console.log("Chess.Rules.Knight.isKnight: "+JSON.stringify(move)+" = "+result);
+	 // console.log("Chess.Rules.Knight.isKnight: "+JSON.stringify(move)+" = "+result);
 	  return result;
 	};
 	

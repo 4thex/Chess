@@ -872,7 +872,28 @@ QUnit.test("King can move one file and/or one rank in all directions", function(
 });
 
 QUnit.test("King cannot move to a threatened square", function(assert) {
-  
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.peek(function(square) {
+	  if(square.rank === model.static.Ranks[1] && square.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
+	  }
+	  if(square.rank === model.static.Ranks[3] && square.file === model.static.Files.d) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.Q};
+	  }
+    return undefined;
+  });  
+  assert.throws(function() {
+    model.move({
+      from: {rank: model.static.Ranks[1], file: model.static.Files.e}, 
+      to: {rank: model.static.Ranks[1], file: model.static.Files.f}
+    });
+  }, function(error) {
+    return true;
+  });
+});
+
+QUnit.test("King cannot be captured", function(assert) {
 });
 
 QUnit.test("Castling is not allowed if king is in check", function(assert) {
@@ -1329,6 +1350,12 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
+
+
+
+
+
+
 
 
 

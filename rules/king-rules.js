@@ -29,6 +29,11 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
     return !model.hasMoved(move.from);
   };
   
+  var toSquareNotThreatened = function(move) {
+    var piece = model.peek(move.from);
+    return !squareThreatened(move.to, piece.color);
+  };
+  
   var squareBetweenNotThreatened = function(move) {
     var fileChange = move.to.file - move.from.file;
     var step = fileChange/Math.abs(fileChange);
@@ -55,6 +60,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   
   var squareThreatened = function(square, color) {
     var thread = {};
+    thread.rules = Chess.Rules(model);
     thread.file = Object.getOwnPropertyNames(model.static.Files).filter(function(file) {
       thread.rank = Object.getOwnPropertyNames(model.static.Ranks).filter(function(rank) {
         var threadMove = {
@@ -65,8 +71,10 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
           to: square
         };
         var threadFromPiece = model.peek(threadMove.from);
-        var rules = Chess.Rules(model);
-        if(threadFromPiece && threadFromPiece.color !== color && rules.isLegal(threadMove)) {
+        if(threadFromPiece 
+          && threadFromPiece.kind !== model.static.Kinds.K // Important to avoid stack overflow
+          && threadFromPiece.color !== color 
+          && thread.rules.isLegal(threadMove)) {
           return true;
         }
         return false;
@@ -75,7 +83,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
     });
     return thread.file.length > 0 || thread.rank.length > 0;
   };
-  
+
   var kingNotThreatened = function(move) {
     var color = model.peek(move.from).color;
     return !squareThreatened(move.from, color);
@@ -131,10 +139,14 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   that.isLegal = function() {
     return Chain(model)
       .when(isKing)
+      .and(toSquareNotThreatened)
       .and(oneInAnyDirectionOrCastle);
   }();
   return that;
 };
+
+
+
 
 
 
