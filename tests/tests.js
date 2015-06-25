@@ -874,7 +874,7 @@ QUnit.test("King can move one file and/or one rank in all directions", function(
 QUnit.test("King cannot move to a threatened square", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
-  model.peek(function(square) {
+  model.peek = function(square) {
 	  if(square.rank === model.static.Ranks[1] && square.file === model.static.Files.e) {
 	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
 	  }
@@ -882,7 +882,7 @@ QUnit.test("King cannot move to a threatened square", function(assert) {
 	    return {color: model.static.Colors.Black, kind: model.static.Kinds.Q};
 	  }
     return undefined;
-  });  
+  };  
   assert.throws(function() {
     model.move({
       from: {rank: model.static.Ranks[1], file: model.static.Files.e}, 
@@ -893,7 +893,26 @@ QUnit.test("King cannot move to a threatened square", function(assert) {
   });
 });
 
-QUnit.test("King cannot be captured", function(assert) {
+QUnit.test("King cannot move next to the opponent king", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.peek = function(square) {
+	  if(square.rank === model.static.Ranks[4] && square.file === model.static.Files.e) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
+	  }
+	  if(square.rank === model.static.Ranks[4] && square.file === model.static.Files.c) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.K};
+	  }
+    return undefined;
+  };  
+  assert.throws(function() {
+    model.move({
+      from: {rank: model.static.Ranks[4], file: model.static.Files.e}, 
+      to: {rank: model.static.Ranks[4], file: model.static.Files.d}
+    });
+  }, function(error) {
+    return error.reason === "King cannot move next to opponent king";
+  });  
 });
 
 QUnit.test("Castling is not allowed if king is in check", function(assert) {
@@ -1350,6 +1369,9 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
+
+
+
 
 
 

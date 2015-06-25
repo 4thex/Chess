@@ -31,7 +31,34 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   
   var toSquareNotThreatened = function(move) {
     var piece = model.peek(move.from);
-    return !squareThreatened(move.to, piece.color);
+    var result = !squareThreatened(move.to, piece.color);
+    if(!result) {
+      move.error = "King cannot move to threatened square";
+    }
+    return result;
+  };
+  
+  var notToSquareNextToOpponentKing = function(move) {
+    var toNorth = {file: move.to.file, rank: move.to.rank+1};
+    var toNorthEast = {file: move.to.file+1, rank: move.to.rank+1};
+    var toEast = {file: move.to.file+1, rank: move.to.rank};
+    var toSouthEast = {file: move.to.file+1, rank: move.to.rank-1};
+    var toSouth = {file: move.to.file, rank: move.to.rank-1};
+    var toSouthWest = {file: move.to.file-1, rank: move.to.rank-1};
+    var toWest = {file: move.to.file-1, rank: move.to.rank};
+    var toNorthWest = {file: move.to.file-1, rank: move.to.rank+1};
+    var neighbours = [toNorth, toNorthEast, toEast, toSouthEast, toSouth, toSouthWest, toWest, toNorthWest];
+    var result = neighbours.every(function(square) {
+      if(square.file === move.from.file && square.rank === move.from.rank) {
+        return true;
+      }
+      var piece = model.peek(square);
+      return !piece || piece.kind !== model.static.Kinds.K;
+    });
+    if(!result) {
+      move.error = "King cannot move next to opponent king";
+    }
+    return result;
   };
   
   var squareBetweenNotThreatened = function(move) {
@@ -75,6 +102,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
           && threadFromPiece.kind !== model.static.Kinds.K // Important to avoid stack overflow
           && threadFromPiece.color !== color 
           && thread.rules.isLegal(threadMove)) {
+          console.log(JSON.stringify(threadFromPiece));
           return true;
         }
         return false;
@@ -140,10 +168,12 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
     return Chain(model)
       .when(isKing)
       .and(toSquareNotThreatened)
+      .and(notToSquareNextToOpponentKing)
       .and(oneInAnyDirectionOrCastle);
   }();
   return that;
 };
+
 
 
 
