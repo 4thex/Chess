@@ -102,7 +102,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
           && threadFromPiece.kind !== model.static.Kinds.K // Important to avoid stack overflow
           && threadFromPiece.color !== color 
           && thread.rules.isLegal(threadMove)) {
-          console.log(JSON.stringify(threadFromPiece));
+          // console.log(JSON.stringify(threadFromPiece));
           return true;
         }
         return false;

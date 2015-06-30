@@ -915,6 +915,24 @@ QUnit.test("King cannot move next to the opponent king", function(assert) {
   });  
 });
 
+QUnit.test("Pawn can only threaten square it can capture", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+  model.peek = function(square) {
+	  if(square.rank === model.static.Ranks[7] && square.file === model.static.Files.c) {
+	    return {color: model.static.Colors.Black, kind: model.static.Kinds.P};
+	  }
+	  if(square.rank === model.static.Ranks[4] && square.file === model.static.Files.c) {
+	    return {color: model.static.Colors.White, kind: model.static.Kinds.K};
+	  }
+    return undefined;
+  };  
+  model.move({
+    from: {rank: model.static.Ranks[4], file: model.static.Files.c}, 
+    to: {rank: model.static.Ranks[5], file: model.static.Files.c}
+  });
+});
+
 QUnit.test("Castling is not allowed if king is in check", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);

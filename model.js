@@ -31,6 +31,8 @@ Chess.Model = Chess.Model || function constructor(spec) {
     var from = spec.from;
     var to = spec.to;
     var by = spec.by;
+
+    var rules = Chess.Rules(that);
     if(!rules.isLegal(spec)) {
       throw {message: "Illegal move", reason: spec.error};
     }
@@ -113,7 +115,6 @@ Chess.Model = Chess.Model || function constructor(spec) {
   that.remove = function(square) {
     that.place(square, undefined);
   };
-  var rules = Chess.Rules(that);
   
   var board = function(){
     var board = [];
