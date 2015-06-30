@@ -23,33 +23,33 @@ Chess.Move.createFromSan = function createFromSan(spec) {
 
   var kind;
   if(split[1]) {
-    that.to.rank = model.static.Ranks["1"];
+    that.to.rank = Chess.Ranks["1"];
     that.from = {
-      file: model.static.Files.e,
-      rank: model.static.Ranks["1"]
+      file: Chess.Files.e,
+      rank: Chess.Ranks["1"]
     };
     if(split[2]) { // Queen's castle
-      that.to.file = model.static.Files.c;
+      that.to.file = Chess.Files.c;
     }  else { // King's castle
-      that.to.file = model.static.Files.g;
+      that.to.file = Chess.Files.g;
     }
     return that;
   }
-  that.to.file = model.static.Files[split[6][0]];
-  that.to.rank = model.static.Ranks[split[6][1]];
+  that.to.file = Chess.Files[split[6][0]];
+  that.to.rank = Chess.Ranks[split[6][1]];
   if(split[7]) {
-    that.promote = model.static.Kinds[split[8]];
+    that.promote = Chess.Kinds[split[8]];
   }
   if(split[3]) {
-    kind = model.static.Kinds[split[3]];
+    kind = Chess.Kinds[split[3]];
   } else {
-    kind = model.static.Kinds.P;
+    kind = Chess.Kinds.P;
   }
   if(split[4]) {
-    that.from.file = model.static.Files[split[4]];
+    that.from.file = Chess.Files[split[4]];
   }
   if(split[5]) {
-    that.from.rank = model.static.Ranks[split[5]];
+    that.from.rank = Chess.Ranks[split[5]];
   }
   if(that.from.rank !== undefined && that.from.file === undefined) {
     that.from.file = model.whichFile(kind, that.from.rank, spec.by);
@@ -59,12 +59,12 @@ Chess.Move.createFromSan = function createFromSan(spec) {
   }
   var move;
   if(that.from.rank === undefined && that.from.file === undefined) {
-    Object.getOwnPropertyNames(model.static.Files).filter(function(file) {
-      return Object.getOwnPropertyNames(model.static.Ranks).filter(function(rank) {
+    Object.getOwnPropertyNames(Chess.Files).filter(function(file) {
+      return Object.getOwnPropertyNames(Chess.Ranks).filter(function(rank) {
         move = {
           from: {
-            file: model.static.Files[file],
-            rank: model.static.Ranks[rank]
+            file: Chess.Files[file],
+            rank: Chess.Ranks[rank]
           },
           to: that.to
         };

@@ -1,11 +1,9 @@
 Chess.Rules.Knight = Chess.Rules.Knight || function(model) {
 	var that = {};
-  var definitions = model.static;
-  
+
   // Pre-conditions
 	var isKnight = function(move) {
-	  var result = move.piece.kind === definitions.Kinds.N;
-	 // console.log("Chess.Rules.Knight.isKnight: "+JSON.stringify(move)+" = "+result);
+	  var result = move.piece.kind === Chess.Kinds.N;
 	  return result;
 	};
 	

@@ -12,9 +12,6 @@ var Chain = Chain || function(model) {
 		}
     return conditions.every(function(condition) {
       var result = condition(move);
-      // if(!result) {
-      //   console.log("Chain.result: "+condition+" returned false");
-      // }
 		  return result;
     });
   };

@@ -1,10 +1,9 @@
 Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
 	var that = {};
-  var definitions = model.static;
-  
+
   // Pre-conditions
 	var isQueen = function(move) {
-	  var result = move.piece.kind === definitions.Kinds.Q;
+	  var result = move.piece.kind === Chess.Kinds.Q;
 	 // console.log("Chess.Rules.Knight.isKnight: "+JSON.stringify(move)+" = "+result);
 	  return result;
 	};
@@ -31,7 +30,7 @@ Chess.Rules.Queen = Chess.Rules.Queen || function(model) {
       if(fileDirection) file += fileDirection;
       if(rankDirection) rank += rankDirection;
       if(!(file === move.to.file && rank === move.to.rank) && model.peek({file: file, rank:rank})) {
-        move.error = "The queen cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
+        move.error = "The queen cannot jump over piece on "+Chess.Files.nameFor(file)+Chess.Ranks.nameFor(rank);
         return false;
       }
     } while(!(file === move.to.file && rank === move.to.rank));

@@ -1,10 +1,9 @@
 Chess.Rules.Bishop = Chess.Rules.Bishop || function(model) {
 	var that = {};
-  var definitions = model.static;
-  
+
   // Pre-conditions
 	var isBishop = function(move) {
-	  return move.piece.kind === definitions.Kinds.B;
+	  return move.piece.kind === Chess.Kinds.B;
 	};
 	
 	// Rules
@@ -29,7 +28,7 @@ Chess.Rules.Bishop = Chess.Rules.Bishop || function(model) {
       file += fileDirection;
       rank += rankDirection;
       if(file !== move.to.file && model.peek({file: file, rank:rank})) {
-        move.error = "Cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
+        move.error = "Cannot jump over piece on "+Chess.Files.nameFor(file)+Chess.Ranks.nameFor(rank);
         return false;
       }
     } while(file !== move.to.file);

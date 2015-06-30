@@ -36,7 +36,7 @@ Chess.Rules.WhitePawn = Chess.Rules.WhitePawn || function(model) {
 		  move.error = "Pawn can not move more than 2 ranks";
 		  return false;
 		}
-		if(move.from.rank !== Chess.Model.Ranks[2]) {
+		if(move.from.rank !== Chess.Ranks[2]) {
 		  result = move.to.rank - move.from.rank === 1;
 		  move.error = "Pawn can only move one rank unless moving from rank 2";
 		} else {

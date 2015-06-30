@@ -1,10 +1,9 @@
 Chess.Rules.Rook = Chess.Rules.Rook || function(model) {
 	var that = {};
-  var definitions = model.static;
-  
+
   // Pre-conditions
 	var isRook = function(move) {
-	  return move.piece.kind === definitions.Kinds.R;
+	  return move.piece.kind === Chess.Kinds.R;
 	};
 	
 	// Rules
@@ -29,7 +28,7 @@ Chess.Rules.Rook = Chess.Rules.Rook || function(model) {
       if(fileDirection) file += fileDirection;
       if(rankDirection) rank += rankDirection;
       if(model.peek({file: file, rank:rank})) {
-        move.error = "Cannot jump over piece on "+model.static.Files.nameFor(file)+model.static.Ranks.nameFor(rank);
+        move.error = "Cannot jump over piece on "+Chess.Files.nameFor(file)+Chess.Ranks.nameFor(rank);
         return false;
       }
     } while(!(file === move.to.file && rank === move.to.rank));

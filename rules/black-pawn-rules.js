@@ -1,14 +1,13 @@
 Chess.Rules.BlackPawn = Chess.Rules.BlackPawn || function(model) {
 	var that = {};
-  var definitions = model.static;
-  
+
   // Pre-conditions
 	var isPawn = function(move) {
-	  return move.piece.kind === definitions.Kinds.P;
+	  return move.piece.kind === Chess.Kinds.P;
 	};
 	
 	var isBlack = function(move) {
-	  return move.piece.color === definitions.Colors.Black;
+	  return move.piece.color === Chess.Colors.Black;
 	};
 	
 	// Rules
@@ -19,14 +18,14 @@ Chess.Rules.BlackPawn = Chess.Rules.BlackPawn || function(model) {
     }
     if(Math.abs(move.to.file-move.from.file) === 1
       && move.from.rank - move.to.rank === 1) {
-      return toPiece.color === definitions.Colors.White;
+      return toPiece.color === Chess.Colors.White;
     }
     return false;
   };
   
 	var onlyDecreasesTwoFromRank7 = function(move) {
 		if(move.from.rank - move.to.rank > 2) return false;
-		if(move.from.rank === Chess.Model.Ranks[7]) {
+		if(move.from.rank === Chess.Ranks[7]) {
       return move.from.rank - move.to.rank <= 2;
 		} else {
 		  return move.from.rank - move.to.rank === 1;
@@ -34,9 +33,9 @@ Chess.Rules.BlackPawn = Chess.Rules.BlackPawn || function(model) {
 	};
 	
 	var noPieceBetween = function(move) {
-	  if(move.from.rank !== model.static.Ranks[7]) return true;
-	  if(move.to.rank === model.static.Ranks[5]) {
-	    return !model.peek({file: move.from.file, rank: model.static.Ranks[6]});
+	  if(move.from.rank !== Chess.Ranks[7]) return true;
+	  if(move.to.rank === Chess.Ranks[5]) {
+	    return !model.peek({file: move.from.file, rank: Chess.Ranks[6]});
 	  }
 	  return true;
 	};

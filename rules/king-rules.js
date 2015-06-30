@@ -1,10 +1,9 @@
 Chess.Rules.King = Chess.Rules.King || function(model) {
 	var that = {};
-  var definitions = model.static;
-  
+
   // Pre-conditions
 	var isKing = function(move) {
-	  var result = move.piece.kind === definitions.Kinds.K;
+	  var result = move.piece.kind === Chess.Kinds.K;
 	  return result;
 	};
 	
@@ -53,7 +52,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
         return true;
       }
       var piece = model.peek(square);
-      return !piece || piece.kind !== model.static.Kinds.K;
+      return !piece || piece.kind !== Chess.Kinds.K;
     });
     if(!result) {
       move.error = "King cannot move next to opponent king";
@@ -88,18 +87,18 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   var squareThreatened = function(square, color) {
     var thread = {};
     thread.rules = Chess.Rules(model);
-    thread.file = Object.getOwnPropertyNames(model.static.Files).filter(function(file) {
-      thread.rank = Object.getOwnPropertyNames(model.static.Ranks).filter(function(rank) {
+    thread.file = Object.getOwnPropertyNames(Chess.Files).filter(function(file) {
+      thread.rank = Object.getOwnPropertyNames(Chess.Ranks).filter(function(rank) {
         var threadMove = {
           from: {
-              file: model.static.Files[file],
-              rank: model.static.Ranks[rank]
+              file: Chess.Files[file],
+              rank: Chess.Ranks[rank]
             },
           to: square
         };
         var threadFromPiece = model.peek(threadMove.from);
         if(threadFromPiece 
-          && threadFromPiece.kind !== model.static.Kinds.K // Important to avoid stack overflow
+          && threadFromPiece.kind !== Chess.Kinds.K // Important to avoid stack overflow
           && threadFromPiece.color !== color 
           && thread.rules.isLegal(threadMove)) {
           // console.log(JSON.stringify(threadFromPiece));
@@ -121,9 +120,9 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
     var fileChange = Math.abs(move.to.file - move.from.file);
     var rookSquare = {};
     if(fileChange > 1) {
-      rookSquare.file = model.static.Files.h;
+      rookSquare.file = Chess.Files.h;
     } else {
-      rookSquare.file = model.static.Files.a;
+      rookSquare.file = Chess.Files.a;
     }
     rookSquare.rank = move.to.rank;
     return !model.hasMoved(rookSquare);
@@ -137,31 +136,31 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   };
   
   var whiteKingsCastle = function(move) {
-    return move.from.rank === model.static.Ranks["1"]
-      && move.from.file === model.static.Files.e
-      && move.to.rank === model.static.Ranks["1"]
-      && move.to.file === model.static.Files.g;
+    return move.from.rank === Chess.Ranks["1"]
+      && move.from.file === Chess.Files.e
+      && move.to.rank === Chess.Ranks["1"]
+      && move.to.file === Chess.Files.g;
   };
   
   var whiteQueensCastle = function(move) {
-    return move.from.rank === model.static.Ranks["1"]
-      && move.from.file === model.static.Files.e
-      && move.to.rank === model.static.Ranks["1"]
-      && move.to.file === model.static.Files.c;
+    return move.from.rank === Chess.Ranks["1"]
+      && move.from.file === Chess.Files.e
+      && move.to.rank === Chess.Ranks["1"]
+      && move.to.file === Chess.Files.c;
   };
   
   var blackKingsCastle = function(move) {
-    return move.from.rank === model.static.Ranks["8"]
-      && move.from.file === model.static.Files.e
-      && move.to.rank === model.static.Ranks["8"]
-      && move.to.file === model.static.Files.g;
+    return move.from.rank === Chess.Ranks["8"]
+      && move.from.file === Chess.Files.e
+      && move.to.rank === Chess.Ranks["8"]
+      && move.to.file === Chess.Files.g;
   };
   
   var blackQueensCastle = function(move) {
-    return move.from.rank === model.static.Ranks["8"]
-      && move.from.file === model.static.Files.e
-      && move.to.rank === model.static.Ranks["8"]
-      && move.to.file === model.static.Files.c;
+    return move.from.rank === Chess.Ranks["8"]
+      && move.from.file === Chess.Files.e
+      && move.to.rank === Chess.Ranks["8"]
+      && move.to.file === Chess.Files.c;
   };
   
   that.isLegal = function() {
@@ -173,11 +172,3 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   }();
   return that;
 };
-
-
-
-
-
-
-
-
