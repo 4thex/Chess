@@ -11,13 +11,21 @@ Chess.Rules.Knight = Chess.Rules.Knight || function(model) {
   var sumOfRankAndFileChangeIs3 = function(move) {
     var fileChange = Math.abs(move.to.file - move.from.file);
     var rankChange = Math.abs(move.to.rank - move.from.rank);
-    return fileChange + rankChange === 3;
+    var result = fileChange + rankChange === 3;
+    if(!result) {
+      move.error = "Knight can only move in L-shapes with 1 rank and 2 files, or 2 ranks and 1 file.";
+    }
+    return result;
   };
   
 	var differenceBetweenRankAndFileChangeIs1 = function(move) {
     var fileChange = Math.abs(move.to.file - move.from.file);
     var rankChange = Math.abs(move.to.rank - move.from.rank);
-    return Math.abs(fileChange - rankChange) === 1;	  
+    var result = Math.abs(fileChange - rankChange) === 1;	 
+    if(!result) {
+      move.error = "Knight can only move in L-shapes with 1 rank and 2 files, or 2 ranks and 1 file.";
+    }
+    return result;
 	};
 	
   that.isLegal = function() {
