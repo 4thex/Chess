@@ -583,6 +583,32 @@ QUnit.test("Knight cannot move more than 2 files", function(assert) {
   
 });
 
+QUnit.test("Rook can capture", function(assert) {
+  var model = Chess.Model();
+	var rules = Chess.Rules(model);
+	model.peek = function(tile) {
+	  if(tile.rank === Chess.Ranks[4] && tile.file === Chess.Files.d) {
+	    return {color: Chess.Colors.White, kind: Chess.Kinds.R};
+	  }
+	  if(tile.rank === Chess.Ranks[5] && tile.file === Chess.Files.d) {
+	    return {color: Chess.Colors.Black, kind: Chess.Kinds.R};
+	  }
+    return undefined;
+	};
+	var move = {
+			from: {
+				rank: Chess.Ranks[4],
+				file: Chess.Files.d
+			},
+			to: {
+				rank: Chess.Ranks[5],
+				file: Chess.Files.d
+			}
+	};
+	assert.ok(rules.isLegal(move), "Capturing moving 1 rank up is legal");
+  
+});
+
 QUnit.test("Rook cannot move both rank and file", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
@@ -1387,6 +1413,29 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -5,8 +5,7 @@ if(!Chess) {
 if(!Chess.View) {
   Chess.View = function(spec) {
     var that = {};
-    var files = ["a", "b", "c", "d", "e", "f", "g", "h"];
-    var createSquare = function(container, fileIndex, rank) {
+    var createSquare = function(container, fileIndex, rankIndex) {
       var square = document.createElement("div");
       square.ondragover = function(event) {
         return false;
@@ -28,14 +27,14 @@ if(!Chess.View) {
         return false;
       };
       container.appendChild(square);
-      if((rank + fileIndex) % 2) {
-        square.classList.add("black");
-      } else {
+      if((rankIndex + fileIndex) % 2) {
         square.classList.add("white");
+      } else {
+        square.classList.add("black");
       }
       square.classList.add("square");
-      square.setAttribute("id", "square-"+files[fileIndex]+rank);
-      square.location = {file: fileIndex, rank:rank-1};
+      square.setAttribute("id", "square-"+Chess.Files.nameFor(fileIndex)+Chess.Ranks.nameFor(rankIndex));
+      square.location = {file: fileIndex, rank: rankIndex};
       square.ondrop = function(event) {
         event.target.style.display = "block";
         var piece = JSON.parse(event.dataTransfer.getData("text/plain"));
@@ -68,23 +67,23 @@ if(!Chess.View) {
       container.classList.add("board");
       element.appendChild(container);
       var fileIndex;
-      for(var rank=8; rank>0; --rank) {
+      for(var rankIndex=7; rankIndex>=0; --rankIndex) {
         var rankElement = document.createElement("div");
         container.appendChild(rankElement);
-        rankElement.textContent = rank;
+        rankElement.textContent = Chess.Ranks.nameFor(rankIndex);
         rankElement.classList.add("rank");
         
-        for(fileIndex=0; fileIndex<files.length; ++fileIndex) {
-          createSquare(container, fileIndex, rank);
+        for(fileIndex=0; fileIndex<8; ++fileIndex) {
+          createSquare(container, fileIndex, rankIndex);
         }
       }
       var cornerElement = document.createElement("div");
       container.appendChild(cornerElement);
       cornerElement.classList.add("corner");
-      for(fileIndex=0; fileIndex<files.length; ++fileIndex) {
+      for(fileIndex=0; fileIndex<8; ++fileIndex) {
         var file = document.createElement("div");
         container.appendChild(file);
-        file.textContent = files[fileIndex];
+        file.textContent = Chess.Files.nameFor(fileIndex);
         file.classList.add("file");
       }
       that.pieces.render();

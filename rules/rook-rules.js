@@ -27,7 +27,7 @@ Chess.Rules.Rook = Chess.Rules.Rook || function(model) {
     do {
       if(fileDirection) file += fileDirection;
       if(rankDirection) rank += rankDirection;
-      if(model.peek({file: file, rank:rank})) {
+      if(!(file === move.to.file && rank === move.to.rank) && model.peek({file: file, rank:rank})) {
         move.error = "Cannot jump over piece on "+Chess.Files.nameFor(file)+Chess.Ranks.nameFor(rank);
         return false;
       }
