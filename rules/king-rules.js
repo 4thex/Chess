@@ -30,7 +30,8 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
   
   var toSquareNotThreatened = function(move) {
     var piece = model.peek(move.from);
-    var result = !squareThreatened(move.to, piece.color);
+    var future = Chess.Future(model, move);
+    var result = !squareThreatened(future, move.to, piece.color);
     if(!result) {
       move.error = "King cannot move to threatened square";
     }
@@ -69,7 +70,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
     ];
     var color = model.peek(move.from).color;
     var result = !betweenSquares.some(function(square) {
-      return squareThreatened(square, color);
+      return squareThreatened(model, square, color);
     });
     if(!result) {
       move.error = "A square between king and rook is threatened";
@@ -84,7 +85,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
     return !model.peek(betweenSquare);
   };
   
-  var squareThreatened = function(square, color) {
+  var squareThreatened = function(model, square, color) {
     var thread = {};
     thread.rules = Chess.Rules(model);
     thread.file = Object.getOwnPropertyNames(Chess.Files).filter(function(file) {
@@ -113,7 +114,7 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
 
   var kingNotThreatened = function(move) {
     var color = model.peek(move.from).color;
-    return !squareThreatened(move.from, color);
+    return !squareThreatened(model, move.from, color);
   };
   
   var rookHasNotMoved = function(move) {

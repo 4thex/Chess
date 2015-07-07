@@ -1,15 +1,3 @@
-if(!Object.prototype.nameFor) {
-  Object.prototype.nameFor = function(value) {
-    var property;
-    for(property in this) {
-      if(this[property] === value) {
-        return property;
-      }
-    }
-    return undefined;
-  };
-}
-
 var Chess = Chess || {};
 
 Chess.Model = Chess.Model || function constructor(spec) {
