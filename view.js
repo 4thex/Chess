@@ -4,7 +4,16 @@ if(!Chess) {
 
 if(!Chess.View) {
   Chess.View = function(spec) {
-    var that = {};
+    var presenter;
+    var that = {
+      get presenter() {
+        return presenter;
+      },
+      set presenter(value) {
+        presenter = value;
+      }
+    };
+    
     var createSquare = function(container, fileIndex, rankIndex) {
       var square = document.createElement("div");
       square.ondragover = function(event) {
@@ -44,19 +53,86 @@ if(!Chess.View) {
           to = event.target.parentNode.location;
         }
         try {
-          spec.model.move({from: piece.square, to: to});
-          that.render(spec.element);
+          presenter.move({from: piece.square, to: to});
+          // that.render(spec.element);
         } catch (error) {
           error.reason = error.reason || "unknown reason";
           var messageView = Chess.MessageView({message: error.message+":<br/>"+error.reason, x: event.clientX, y: event.clientY});
           // messageView.message = error;
           messageView.show(function() {
-            that.render(spec.element);
+            // that.render(spec.element);
           });
         }
       };
       return square;
     };
+    
+    that.place = function(square, piece) {
+      piece.square = square;
+      var squareElement = document.querySelector("#square-"+Chess.Files.nameFor(square.file)+Chess.Ranks.nameFor(square.rank));
+      var figurine;
+      switch(piece.kind) {
+        case Chess.Kinds.K:
+          figurine = "\u265A";
+          break;
+        case Chess.Kinds.Q:
+          figurine = "\u265B";
+          break;
+        case Chess.Kinds.R:
+          figurine = "\u265C";
+          break;
+        case Chess.Kinds.B:
+          figurine = "\u265D";
+          break;
+        case Chess.Kinds.N:
+          figurine = "\u265E";
+          break;
+        case Chess.Kinds.P:
+          figurine = "\u265F";
+          break;
+      }
+      var pieceElement = squareElement.querySelector("p.piece");
+      if(!pieceElement) {
+        pieceElement = document.createElement("p");
+        squareElement.appendChild(pieceElement);
+        pieceElement.classList.add("piece");
+        pieceElement.setAttribute("draggable", true);
+        pieceElement.onclick = function(event) {
+          event.target.parentElement.classList.add("dragenter");
+          return false;
+        };
+        pieceElement.ondragstart = function(event) {
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.dropEffect = "move";
+          event.dataTransfer.setData("text/plain", JSON.stringify(piece));
+        };
+        pieceElement.ondrag = function(event) {
+          event.target.style.display = "none";
+        };
+        pieceElement.ondragend = function(event) {
+          if(event.dataTransfer.dropEffect === "none") {
+            event.target.style.display = "block";
+          }
+        };
+      }
+      if(piece.color === Chess.Colors.White) {
+        pieceElement.classList.remove("black");
+        pieceElement.classList.add("white");
+      } else {
+        pieceElement.classList.remove("white");
+        pieceElement.classList.add("black");
+      }
+      pieceElement.piece = piece;
+      pieceElement.textContent = figurine;
+      pieceElement.style.display = "block";
+    };
+    
+    that.remove = function(square) {
+        var squareElement = document.querySelector("#square-"+Chess.Files.nameFor(square.file)+Chess.Ranks.nameFor(square.rank));
+        var pieceElement = squareElement.querySelector("p.piece");
+        squareElement.removeChild(pieceElement);
+    };
+    
     that.render = function(element) {
       var document = element.ownerDocument;
       var container = element.querySelector(".board");
@@ -86,18 +162,19 @@ if(!Chess.View) {
         file.textContent = Chess.Files.nameFor(fileIndex);
         file.classList.add("file");
       }
-      that.pieces.render();
+      // that.pieces.render();
     };
-    that.pieces = spec.pieces({model: spec.model});
+    // that.pieces = spec.pieces({model: spec.model});
     that.render(spec.element);
     return that;
   };
 }
 
 window.addEventListener("load", function() {
+  var body = document.querySelector("body");
   var persister = Chess.Persister({name: "state"});
   var model = Chess.Model({persister: persister});
-  var body = document.querySelector("body");
   var view = Chess.View({element: body, model: model, pieces: Chess.Pieces});
+  var boardPresenter = Chess.BoardPresenter({model: model, view: view, persister: persister});
 });
 

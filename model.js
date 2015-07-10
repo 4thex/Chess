@@ -1,47 +1,28 @@
 var Chess = Chess || {};
 
 Chess.Model = Chess.Model || function constructor(spec) {
+  var moves = [];
   var that = {
-    static: Chess
+    static: Chess,
+    get moves() {
+      return moves;
+    },
+    set moves(value) {
+      moves = value;
+    }
   };
   var hasChangedListeners = [];
   that.addHasChangedListener = function(listener) {
     hasChangedListeners.push(listener);
   };
-  var moves = [];
   
   that.move = function(spec) {
-    var from = spec.from;
-    var to = spec.to;
-    var by = spec.by;
-
-    var rules = Chess.Rules(that);
-    if(!rules.isLegal(spec)) {
-      throw {message: "Illegal move", reason: spec.error};
-    }
     moves.push(spec);
-    if(persister) {
-      persister.save(moves);
-    }
-    var piece = that.peek(from);
-    that.remove(from);
-    that.place(to, piece);
-    // Place rook for castling
-    var fileDiff = to.file-from.file;
-    if(Math.abs(fileDiff) > 1 && piece.kind === Chess.Kinds.K) {
-      if(fileDiff === 2) { // King's castle
-        that.remove({file: Chess.Files.h, rank: to.rank});
-        that.place({file: Chess.Files.f, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
-      } else { // Queen's castle
-        that.remove({file: Chess.Files.a, rank: to.rank});
-        that.place({file: Chess.Files.c, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
-      }
-    }
-    
-    hasChangedListeners.forEach(function(listener) {
-      listener();
-    });
+    var piece = that.peek(spec.from);
+    that.remove(spec.from);
+    that.place(spec.to, piece);
   };
+  
   that.whichFile = function whichFile(kind, rank, color) {
     var fileName = Object.getOwnPropertyNames(Chess.Files).filter(function(name) {
       var file = Chess.Files[name];
@@ -143,22 +124,21 @@ Chess.Model = Chess.Model || function constructor(spec) {
     return board;
   }();
 
-  var persister = spec && spec.persister;
+  // var persister = spec && spec.persister;
     
-  if(persister) {
-    persister.load(function(result) {
-      if(result.item) {
-        moves = result.item;
-        moves.forEach(function(move) {
-          var piece = move.piece;
-          that.remove(move.from);
-          that.place(move.to, piece);
-        });
-      }
-    });
-  }
+  // if(persister) {
+  //   persister.load(function(result) {
+  //     if(result.item) {
+  //       moves = result.item;
+  //       moves.forEach(function(move) {
+  //         var piece = move.piece;
+  //         that.remove(move.from);
+  //         that.place(move.to, piece);
+  //       });
+  //     }
+  //   });
+  // }
   
   return that;
 };
-
 

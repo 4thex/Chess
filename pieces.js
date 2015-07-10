@@ -6,7 +6,6 @@ Chess.Pieces = function(spec) {
     spec.model.forEach(function(piece) {
       var square = piece.square;
       var squareElement = document.querySelector("#square-"+Chess.Files.nameFor(square.file)+Chess.Ranks.nameFor(square.rank));
-      var squareColorIsWhite = squareElement.classList.contains("white");
       var figurine;
         switch(piece.kind) {
           case Chess.Kinds.K:
