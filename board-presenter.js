@@ -66,6 +66,7 @@ Chess.BoardPresenter = function(spec) {
       throw {message: "Illegal move", reason: spec.error};
     }
     model.moves.push(spec);
+    remove(from);
     place(to, piece);
     // Place rook for castling
     var fileDiff = to.file-from.file;
