@@ -45,7 +45,16 @@ Chess.BoardPresenter = function(spec) {
       model.place.apply(view, item);
     });
   };
-  
+  var place = function(square, piece) {
+    [model, view].forEach(function(invoker) {
+      invoker.place.call(invoker, square, piece);
+    });
+  };
+  var remove = function(square) {
+    [model, view].forEach(function(invoker) {
+      invoker.remove.call(invoker, square);
+    });
+  };
   that.move = function(spec) {
     var from = spec.from;
     var to = spec.to;
@@ -56,21 +65,17 @@ Chess.BoardPresenter = function(spec) {
       view.place(from, piece);
       throw {message: "Illegal move", reason: spec.error};
     }
-    model.move(spec);
-    view.place(to, piece);
+    model.moves.push(spec);
+    place(to, piece);
     // Place rook for castling
     var fileDiff = to.file-from.file;
     if(Math.abs(fileDiff) > 1 && piece.kind === Chess.Kinds.K) {
       if(fileDiff === 2) { // King's castle
-        model.remove({file: Chess.Files.h, rank: to.rank});
-        model.place({file: Chess.Files.f, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
-        view.remove({file: Chess.Files.h, rank: to.rank});
-        view.place({file: Chess.Files.f, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
+        remove({file: Chess.Files.h, rank: to.rank});
+        place({file: Chess.Files.f, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
       } else { // Queen's castle
-        model.remove({file: Chess.Files.a, rank: to.rank});
-        model.place({file: Chess.Files.c, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
-        view.remove({file: Chess.Files.a, rank: to.rank});
-        view.place({file: Chess.Files.c, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
+        remove({file: Chess.Files.a, rank: to.rank});
+        place({file: Chess.Files.c, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
       }
     }
     if(persister) {
@@ -86,11 +91,10 @@ Chess.BoardPresenter = function(spec) {
         if(!moves.forEach) return;
         moves.forEach(function(move) {
           var piece = move.piece;
-          model.remove(move.from);
-          model.place(move.to, piece);
-          view.remove(move.from);
-          view.place(move.to, piece);
+          remove(move.from);
+          place(move.to, piece);
         });
+        model.moves = moves;
       }
     });
   }

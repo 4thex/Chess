@@ -899,7 +899,11 @@ QUnit.test("King can move one file and/or one rank in all directions", function(
 
 QUnit.test("King cannot move to a threatened square", function(assert) {
   var model = Chess.Model();
-	var rules = Chess.Rules(model);
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
   model.peek = function(square) {
 	  if(square.rank === Chess.Ranks[1] && square.file === Chess.Files.e) {
 	    return {color: Chess.Colors.White, kind: Chess.Kinds.K};
@@ -910,7 +914,7 @@ QUnit.test("King cannot move to a threatened square", function(assert) {
     return undefined;
   };  
   assert.throws(function() {
-    model.move({
+    presenter.move({
       from: {rank: Chess.Ranks[1], file: Chess.Files.e}, 
       to: {rank: Chess.Ranks[1], file: Chess.Files.f}
     });
@@ -921,7 +925,11 @@ QUnit.test("King cannot move to a threatened square", function(assert) {
 
 QUnit.test("King cannot move next to the opponent king", function(assert) {
   var model = Chess.Model();
-	var rules = Chess.Rules(model);
+	var view = {
+	  remove: function(){},
+	  place: function(){}
+	};
+  var presenter = Chess.BoardPresenter({model: model, view: view});
   model.peek = function(square) {
 	  if(square.rank === Chess.Ranks[4] && square.file === Chess.Files.e) {
 	    return {color: Chess.Colors.White, kind: Chess.Kinds.K};
@@ -932,7 +940,7 @@ QUnit.test("King cannot move next to the opponent king", function(assert) {
     return undefined;
   };  
   assert.throws(function() {
-    model.move({
+    presenter.move({
       from: {rank: Chess.Ranks[4], file: Chess.Files.e}, 
       to: {rank: Chess.Ranks[4], file: Chess.Files.d}
     });
@@ -1041,14 +1049,18 @@ QUnit.test("Castling is not allowed if king has already moved", function(assert)
 
 QUnit.test("Castling is allowed if neither king nor rook have moved yet", function(assert) {
   var model = Chess.Model();
-	var rules = Chess.Rules(model);
-  model.move(Chess.Move.createFromSan({san:"e3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
+  view = {
+    place: function() {},
+    remove: function() {}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(Chess.Move.createFromSan({san:"e3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
   assert.deepEqual(model.peek({file: Chess.Files.g, rank: Chess.Ranks["1"]}), {color: Chess.Colors.White, kind: Chess.Kinds.K}, "Expected white king");
   assert.deepEqual(model.peek({file: Chess.Files.f, rank: Chess.Ranks["1"]}), {color: Chess.Colors.White, kind: Chess.Kinds.R}, "Expected white rook");
 });

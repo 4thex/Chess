@@ -27,14 +27,6 @@ if(!Chess.View) {
         event.target.classList.remove("dragenter");
         return false;
       };
-      square.onmouseover = function(event) {
-        event.target.classList.add("dragenter");
-        return false;
-      };
-      square.onmouseout = function(event) {
-        event.target.classList.remove("dragenter");
-        return false;
-      };
       container.appendChild(square);
       if((rankIndex + fileIndex) % 2) {
         square.classList.add("white");
@@ -45,6 +37,7 @@ if(!Chess.View) {
       square.setAttribute("id", "square-"+Chess.Files.nameFor(fileIndex)+Chess.Ranks.nameFor(rankIndex));
       square.location = {file: fileIndex, rank: rankIndex};
       square.ondrop = function(event) {
+        event.target.classList.remove("dragenter");
         event.target.style.display = "block";
         var piece = JSON.parse(event.dataTransfer.getData("text/plain"));
         var from = piece.square;
@@ -130,7 +123,9 @@ if(!Chess.View) {
     that.remove = function(square) {
         var squareElement = document.querySelector("#square-"+Chess.Files.nameFor(square.file)+Chess.Ranks.nameFor(square.rank));
         var pieceElement = squareElement.querySelector("p.piece");
-        squareElement.removeChild(pieceElement);
+        if(pieceElement) {
+          squareElement.removeChild(pieceElement);
+        }
     };
     
     that.render = function(element) {
@@ -162,9 +157,7 @@ if(!Chess.View) {
         file.textContent = Chess.Files.nameFor(fileIndex);
         file.classList.add("file");
       }
-      // that.pieces.render();
     };
-    // that.pieces = spec.pieces({model: spec.model});
     that.render(spec.element);
     return that;
   };
@@ -174,7 +167,7 @@ window.addEventListener("load", function() {
   var body = document.querySelector("body");
   var persister = Chess.Persister({name: "state"});
   var model = Chess.Model({persister: persister});
-  var view = Chess.View({element: body, model: model, pieces: Chess.Pieces});
+  var view = Chess.View({element: body, model: model});
   var boardPresenter = Chess.BoardPresenter({model: model, view: view, persister: persister});
 });
 
