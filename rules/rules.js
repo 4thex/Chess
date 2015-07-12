@@ -17,6 +17,26 @@ Chess.Rules = Chess.Rules || function(model) {
 	  }
 	  return result;
 	};
+	var whiteMustMoveFirst = function(move) {
+	  var fromPiece = model.peek(move.from);
+	  var last = model.moves.slice(-1)[0];
+	  if(last) return true;
+	  var result = fromPiece.color === Chess.Colors.White;
+	  if(!result) {
+	    move.error = "White must move first";
+	  }
+	  return result;
+	};
+	var movesMustAlternateColor = function(move) {
+	  var fromPiece = model.peek(move.from);
+	  var last = model.moves.slice(-1)[0];
+	  if(!last) return true;
+	  var result = fromPiece.color !== last.piece.color;
+	  if(!result) {
+	    move.error = "Moves must alternate color";
+	  }
+	  return result;
+	};
 	that.isLegal = function() {
   	var blackPawn = Chess.Rules.BlackPawn(model);
   	var whitePawn = Chess.Rules.WhitePawn(model);
@@ -27,6 +47,8 @@ Chess.Rules = Chess.Rules || function(model) {
   	var queen = Chess.Rules.Queen(model);
     return Chain(model)
       .and(fromTileIsNotEmpty)
+      .and(whiteMustMoveFirst)
+      .and(movesMustAlternateColor)
       .and(toTileDoesNotHavePieceOfOwnColor)
       .and(blackPawn.isLegal)
       .and(whitePawn.isLegal)

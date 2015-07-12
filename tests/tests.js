@@ -69,6 +69,40 @@ QUnit.test("Call to whichRank returns correct rank", function(assert) {
 
 
 QUnit.module("Rules");
+
+QUnit.test("Rules must enforce order of moves", function(assert) {
+  var model = Chess.Model();
+  var rules = Chess.Rules(model);
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(
+    {
+      from: {file: Chess.Files.a, rank: Chess.Ranks[2]},
+      to: {file: Chess.Files.a, rank: Chess.Ranks[3]}
+    }
+  );
+  var move = {
+        from: {file: Chess.Files.a, rank: Chess.Ranks[3]},
+        to: {file: Chess.Files.a, rank: Chess.Ranks[4]}
+      };
+	assert.ok(!rules.isLegal(move), "Moving white twice in a row is illegal");
+	assert.equal(move.error, "Moves must alternate color");
+});
+
+QUnit.test("White must move first", function(assert) {
+  var model = Chess.Model();
+  var rules = Chess.Rules(model);
+  var move = {
+        from: {file: Chess.Files.a, rank: Chess.Ranks[7]},
+        to: {file: Chess.Files.a, rank: Chess.Ranks[6]}
+      };
+	assert.ok(!rules.isLegal(move), "Moving black in first move is illegal");
+	assert.equal(move.error, "White must move first");
+});
+
 QUnit.test("Cannot move from an empty tile", function(assert) {
 	var model = Chess.Model();
 	var rules = Chess.Rules(model);
@@ -130,11 +164,23 @@ QUnit.test("White pawn can increase 2 ranks when moved from rank 2", function(as
 	model.peek = function(tile) {
 	  if(tile.rank === Chess.Ranks[7]) {
 	    return {color: Chess.Colors.Black, kind: Chess.Kinds.P};
-	  } else {
-	    return undefined;
 	  }
+	  if(tile.rank === Chess.Ranks[2]) {
+	    return {color: Chess.Colors.White, kind: Chess.Kinds.P};
+	  }
+	  return undefined;
 	};
 	var rules = Chess.Rules(model);
+	model.move({
+			from: {
+				rank: Chess.Ranks[2],
+				file: Chess.Files.a
+			},
+			to: {
+				rank: Chess.Ranks[3],
+				file: Chess.Files.a
+			}
+  });
 	var move = {
 			from: {
 				rank: Chess.Ranks[7],
@@ -182,8 +228,22 @@ QUnit.test("White pawn can change file on capture", function(assert) {
 	  if(tile.rank === Chess.Ranks[3] && tile.file === Chess.Files.b) {
 	    return {color: Chess.Colors.White, kind: Chess.Kinds.R};
 	  }
+	  if(tile.rank === Chess.Ranks[3] && tile.file === Chess.Files.e) {
+	    return {color: Chess.Colors.White, kind: Chess.Kinds.R};
+	  }
     return undefined;
 	};
+	// First move must be white
+	model.move({
+			from: {
+				rank: Chess.Ranks[3],
+				file: Chess.Files.e
+			},
+			to: {
+				rank: Chess.Ranks[3],
+				file: Chess.Files.d
+			}
+	});
 	var move = {
 			from: {
 				rank: Chess.Ranks[4],
@@ -781,6 +841,9 @@ QUnit.test("Bishop cannot move past any piece in the way", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
 	model.peek = function(tile) {
+	  if(tile.rank === Chess.Ranks[1] && tile.file === Chess.Files.h) {
+	    return {color: Chess.Colors.White, kind: Chess.Kinds.P};
+	  }
 	  if(tile.rank === Chess.Ranks[1] && tile.file === Chess.Files.a) {
 	    return {color: Chess.Colors.White, kind: Chess.Kinds.B};
 	  }
@@ -792,6 +855,17 @@ QUnit.test("Bishop cannot move past any piece in the way", function(assert) {
 	  }
     return undefined;
 	};
+  // We need a white move first
+  model.move({
+			from: {
+				rank: Chess.Ranks[1],
+				file: Chess.Files.h
+			},
+			to: {
+				rank: Chess.Ranks[2],
+				file: Chess.Files.h
+			}
+  });
 	var move = {
 			from: {
 				rank: Chess.Ranks[1],
@@ -961,10 +1035,10 @@ QUnit.test("Pawn can only threaten square it can capture", function(assert) {
 	  }
     return undefined;
   };  
-  model.move({
+  assert.ok(rules.isLegal({
     from: {rank: Chess.Ranks[4], file: Chess.Files.c}, 
     to: {rank: Chess.Ranks[5], file: Chess.Files.c}
-  });
+  }));
 });
 
 QUnit.test("Castling is not allowed if king is in check", function(assert) {
@@ -1445,5 +1519,7 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
+
+
 
 

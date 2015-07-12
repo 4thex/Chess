@@ -17,8 +17,9 @@ Chess.Model = Chess.Model || function constructor(spec) {
   };
   
   that.move = function(spec) {
-    moves.push(spec);
     var piece = that.peek(spec.from);
+    spec.piece = piece;
+    moves.push(spec);
     that.remove(spec.from);
     that.place(spec.to, piece);
   };
