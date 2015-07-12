@@ -198,10 +198,23 @@ QUnit.test("White pawn cannot increase 2 ranks when moved from rank higher than 
 	model.peek = function(tile) {
 	  if(tile.rank === Chess.Ranks[6]) {
 	    return {color: Chess.Colors.Black, kind: Chess.Kinds.P};
-	  } else {
-	    return undefined;
 	  }
+	  if(tile.rank === Chess.Ranks[2]) {
+	    return {color: Chess.Colors.White, kind: Chess.Kinds.P};
+	  }
+	  return undefined;
 	};
+	// We must move white first
+	model.move({
+			from: {
+				rank: Chess.Ranks[2],
+				file: Chess.Files.a
+			},
+			to: {
+				rank: Chess.Ranks[3],
+				file: Chess.Files.a
+			}
+	});
 	var rules = Chess.Rules(model);
 	var move = {
 			from: {
@@ -311,23 +324,37 @@ QUnit.test("Black pawn can decrease 2 ranks when moved from rank 7", function(as
 	model.peek = function(tile) {
 	  if(tile.rank === Chess.Ranks[7]) {
 	    return {color: Chess.Colors.Black, kind: Chess.Kinds.P};
-	  } else {
-	    return undefined;
 	  }
+	  if(tile.rank === Chess.Ranks[2]) {
+	    return {color: Chess.Colors.White, kind: Chess.Kinds.P};
+	  }
+	  return undefined;
 	};
 	var rules = Chess.Rules(model);
+	// We must move white first
+	model.move({
+		from: {
+			rank: Chess.Ranks[2],
+			file: Chess.Files.a
+		},
+		to: {
+			rank: Chess.Ranks[3],
+			file: Chess.Files.a
+		}
+	});
 	var move = {
-			from: {
-				rank: Chess.Ranks[7],
-				file: Chess.Files.a
-			},
-			to: {
-				rank: Chess.Ranks[5],
-				file: Chess.Files.a
-			}
+		from: {
+			rank: Chess.Ranks[7],
+			file: Chess.Files.a
+		},
+		to: {
+			rank: Chess.Ranks[5],
+			file: Chess.Files.a
+		}
 	};
 	assert.ok(rules.isLegal(move), "Moving 2 ranks is ok from rank 7");
 });
+
 QUnit.test("Black pawn cannot decrease 2 ranks when moved from rank lower than 7", function(assert) {
 	var model = Chess.Model();
 	model.peek = function(tile) {
@@ -1519,6 +1546,20 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
