@@ -969,17 +969,21 @@ QUnit.test("Pawn can only threaten square it can capture", function(assert) {
 
 QUnit.test("Castling is not allowed if king is in check", function(assert) {
   var model = Chess.Model();
-	var rules = Chess.Rules(model);
-  model.move(Chess.Move.createFromSan({san:"e3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"c6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Bc4", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"d3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"Qa5+", model: model, by: Chess.Colors.Black}));
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(Chess.Move.createFromSan({san:"e3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"c6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Bc4", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"d3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"Qa5+", model: model, by: Chess.Colors.Black}));
   try {
-    model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
+    presenter.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
     assert.ok(false, "Missing expected exception");
   } catch (exception) {
     assert.strictEqual(exception.message, "Illegal move", "Expected error when king is in check");
@@ -988,17 +992,21 @@ QUnit.test("Castling is not allowed if king is in check", function(assert) {
 
 QUnit.test("Castling is not allowed if any square between king and rook are threatened", function(assert) {
   var model = Chess.Model();
-	var rules = Chess.Rules(model);
-  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"c6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Bc4", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Nh3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"f6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"f4", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"Qb6", model: model, by: Chess.Colors.Black}));
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"c6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Bc4", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Nh3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"f6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"f4", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"Qb6", model: model, by: Chess.Colors.Black}));
   try {
-    model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
+    presenter.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
     assert.ok(false, "Missing expected exception");
   } catch (exception) {
     assert.strictEqual(exception.message, "Illegal move", "Expected error when square between king and rook is threatened");
@@ -1007,19 +1015,23 @@ QUnit.test("Castling is not allowed if any square between king and rook are thre
 
 QUnit.test("Castling is not allowed if rook has already moved", function(assert) {
   var model = Chess.Model();
-	var rules = Chess.Rules(model);
-  model.move(Chess.Move.createFromSan({san:"e3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Rg1", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"f6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Rh1", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"f5", model: model, by: Chess.Colors.Black}));
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(Chess.Move.createFromSan({san:"e3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Rg1", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"f6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Rh1", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"f5", model: model, by: Chess.Colors.Black}));
   try {
-    model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
+    presenter.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
     assert.ok(false, "Missing expected exception");
   } catch (exception) {
     assert.strictEqual(exception.message, "Illegal move", "Expected error when rook has already moved");
@@ -1028,19 +1040,23 @@ QUnit.test("Castling is not allowed if rook has already moved", function(assert)
 
 QUnit.test("Castling is not allowed if king has already moved", function(assert) {
   var model = Chess.Model();
-	var rules = Chess.Rules(model);
-  model.move(Chess.Move.createFromSan({san:"e3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Kf1", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"f6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Ke1", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"f5", model: model, by: Chess.Colors.Black}));
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(Chess.Move.createFromSan({san:"e3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Bd3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Nf3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e4", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Kf1", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"f6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Ke1", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"f5", model: model, by: Chess.Colors.Black}));
   try {
-    model.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
+    presenter.move(Chess.Move.createFromSan({san:"O-O", model: model, by: Chess.Colors.White}));
     assert.ok(false, "Missing expected exception");
   } catch (exception) {
     assert.strictEqual(exception.message, "Illegal move", "Expected error when king has already moved");
@@ -1067,15 +1083,19 @@ QUnit.test("Castling is allowed if neither king nor rook have moved yet", functi
 
 QUnit.test("King cannot jump over a piece when castling", function(assert) {
   var model = Chess.Model();
-	var rules = Chess.Rules(model);
-  model.move(Chess.Move.createFromSan({san:"Nc3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e6", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"d3", model: model, by: Chess.Colors.White}));
-  model.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
-  model.move(Chess.Move.createFromSan({san:"Bd2", model: model, by: Chess.Colors.White}));
+  view = {
+    place: function() {},
+    remove: function() {}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(Chess.Move.createFromSan({san:"Nc3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"d3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"e5", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"Bd2", model: model, by: Chess.Colors.White}));
   var castle = Chess.Move.createFromSan({san:"O-O-O", model: model, by: Chess.Colors.White});
   assert.throws(function() {
-    model.move(castle);
+    presenter.move(castle);
   }, function(error) {
     return error.message === "Illegal move";
   }, "Expect illegal move");
@@ -1425,6 +1445,5 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
-
 
 
