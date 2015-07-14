@@ -228,9 +228,22 @@ QUnit.test("White pawn cannot increase 2 ranks when moved from rank higher than 
 	};
 	assert.ok(!rules.isLegal(move), "Moving 2 ranks is illegal from ranks lower than 7");
 });
+
 QUnit.test("White pawn can only do 'en passant' capture on the next turn after opponent double-tile move", function(assert) {
-  assert.ok(false, "Not implemented yet. It requires model history.");
+  var model = Chess.Model();
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(Chess.Move.createFromSan({san:"a4", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"h6", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"a5", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"b5", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"ab6e.p", model: model, by: Chess.Colors.White}));
+  assert.equal(model.peek({file: Chess.Files.b, rank: Chess.Ranks[5]}), undefined);
 });
+
 QUnit.test("White pawn can change file on capture", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);
@@ -377,9 +390,23 @@ QUnit.test("Black pawn cannot decrease 2 ranks when moved from rank lower than 7
 	};
 	assert.ok(!rules.isLegal(move), "Moving 2 ranks is illegal from ranks lower than 7");
 });
+
 QUnit.test("Black pawn can only do 'en passant' capture on the next turn after opponent double-tile move", function(assert) {
-  assert.ok(false, "Not implemented yet. It requires model history.");
+  var model = Chess.Model();
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  presenter.move(Chess.Move.createFromSan({san:"h3", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"a5", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"h4", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"a4", model: model, by: Chess.Colors.Black}));
+  presenter.move(Chess.Move.createFromSan({san:"b4", model: model, by: Chess.Colors.White}));
+  presenter.move(Chess.Move.createFromSan({san:"b3", model: model, by: Chess.Colors.Black}));
+  assert.equal(model.peek({file: Chess.Files.b, rank: Chess.Ranks[4]}), undefined);
 });
+
 QUnit.test("Black pawn can change file on capture", function(assert) {
   var model = Chess.Model();
 	var rules = Chess.Rules(model);

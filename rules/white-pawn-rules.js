@@ -18,7 +18,16 @@ Chess.Rules.WhitePawn = Chess.Rules.WhitePawn || function(model) {
     if(!toPiece) {
       result = move.from.file === move.to.file;
       if(!result) {
-        move.error = "Pawn can only change file on capture";
+        var lastMove = model.moves.slice(-1)[0];
+        if(lastMove 
+          && Math.abs(lastMove.to.rank-lastMove.from.rank) === 2 
+          && lastMove.piece.kind === Chess.Kinds.P
+          && lastMove.to.file === move.to.file
+          && move.to.rank === lastMove.to.rank+1) {
+          result = true;
+        } else {
+          move.error = "Pawn can only change file on capture";
+        }
       }
       return result;
     }
@@ -72,4 +81,4 @@ Chess.Rules.WhitePawn = Chess.Rules.WhitePawn || function(model) {
       .and(isChangingFileOnCapture);
   }();
   return that;
-};
+};;

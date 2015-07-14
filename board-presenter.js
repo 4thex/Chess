@@ -65,6 +65,17 @@ Chess.BoardPresenter = function(spec) {
       view.place(from, piece);
       throw {message: "Illegal move", reason: spec.error};
     }
+    // Remove pawn on en passant move
+    if(piece.kind === Chess.Kinds.P
+      && from.file !== to.file
+      && !model.peek(to)) {
+      if(piece.color === Chess.Colors.White) {
+        remove({file: to.file, rank: to.rank-1});
+      } else {
+        remove({file: to.file, rank: to.rank+1});
+      }   
+    }
+
     model.moves.push(spec);
     remove(from);
     place(to, piece);
