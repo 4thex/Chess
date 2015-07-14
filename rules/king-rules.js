@@ -114,7 +114,8 @@ Chess.Rules.King = Chess.Rules.King || function(model) {
 
   var kingNotThreatened = function(move) {
     var color = model.peek(move.from).color;
-    return !squareThreatened(model, move.from, color);
+    var future = Chess.Future(model, move);
+    return !squareThreatened(future, move.from, color);
   };
   
   var rookHasNotMoved = function(move) {

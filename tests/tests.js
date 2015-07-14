@@ -390,8 +390,22 @@ QUnit.test("Black pawn can change file on capture", function(assert) {
 	  if(square.rank === Chess.Ranks[3] && square.file === Chess.Files.b) {
 	    return {color: Chess.Colors.White, kind: Chess.Kinds.R};
 	  }
+	  if(square.rank === Chess.Ranks[3] && square.file === Chess.Files.h) {
+	    return {color: Chess.Colors.White, kind: Chess.Kinds.R};
+	  }
     return undefined;
 	};
+	// Move white first
+	model.move({
+		from: {
+			rank: Chess.Ranks[3],
+			file: Chess.Files.h
+		},
+		to: {
+			rank: Chess.Ranks[4],
+			file: Chess.Files.h
+		}
+	});
 	var move = {
 			from: {
 				rank: Chess.Ranks[4],
@@ -402,7 +416,7 @@ QUnit.test("Black pawn can change file on capture", function(assert) {
 				file: Chess.Files.b
 			}
 	};
-	assert.ok(rules.isLegal(move), "Moving to neighbouring file is legal on capture");
+	assert.ok(rules.isLegal(move), "Moving to neighbouring file is legal on capture: "+move.error);
 	model.peek = function(tile) {
 	  if(tile.rank === Chess.Ranks[4] && tile.file === Chess.Files.a) {
 	    return {color: Chess.Colors.Black, kind: Chess.Kinds.P};
@@ -1009,17 +1023,36 @@ QUnit.test("King cannot move to a threatened square", function(assert) {
 	  if(square.rank === Chess.Ranks[1] && square.file === Chess.Files.e) {
 	    return {color: Chess.Colors.White, kind: Chess.Kinds.K};
 	  }
+	  if(square.rank === Chess.Ranks[2] && square.file === Chess.Files.h) {
+	    return {color: Chess.Colors.White, kind: Chess.Kinds.P};
+	  }
 	  if(square.rank === Chess.Ranks[3] && square.file === Chess.Files.d) {
 	    return {color: Chess.Colors.Black, kind: Chess.Kinds.Q};
 	  }
+	  if(square.rank === Chess.Ranks[7] && square.file === Chess.Files.h) {
+	    return {color: Chess.Colors.Black, kind: Chess.Kinds.P};
+	  }
     return undefined;
   };  
+  // Move white, and black first. If the king is the first to move, the
+  // validation of king moving to threatened field will fail because white
+  // must move first.
+  presenter.move({
+      from: {rank: Chess.Ranks[2], file: Chess.Files.h}, 
+      to: {rank: Chess.Ranks[3], file: Chess.Files.h}
+  });
+  presenter.move({
+      from: {rank: Chess.Ranks[7], file: Chess.Files.h}, 
+      to: {rank: Chess.Ranks[6], file: Chess.Files.h}
+  });
   assert.throws(function() {
     presenter.move({
       from: {rank: Chess.Ranks[1], file: Chess.Files.e}, 
       to: {rank: Chess.Ranks[1], file: Chess.Files.f}
     });
+    console.log("no error");
   }, function(error) {
+    console.log(error);
     return true;
   });
 });
@@ -1546,21 +1579,4 @@ QUnit.test("Persister can store a complex object", function(assert) {
     });
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

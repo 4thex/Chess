@@ -10,5 +10,10 @@ Chess.Future = function(model, move) {
     }
     return model.peek(square);
   };
+  Object.defineProperty(that, 'moves', {
+    get: function() {
+      return model.moves.concat(move);
+    }
+  });
   return that;
 };
