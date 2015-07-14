@@ -81,4 +81,4 @@ Chess.Rules.WhitePawn = Chess.Rules.WhitePawn || function(model) {
       .and(isChangingFileOnCapture);
   }();
   return that;
-};;
+};
