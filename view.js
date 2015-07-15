@@ -128,8 +128,25 @@ if(!Chess.View) {
         }
     };
     
-    that.render = function(element) {
+    
+    
+    that.render = function() {
+      var element = spec.element;
       var document = element.ownerDocument;
+      var menu = element.querySelector("#menu");
+      if(menu) {
+        element.removeChild(menu);
+      }
+      menu = document.createElement("div");
+      menu.id="menu";
+      var newGameMenuItem = document.createElement("div");
+      newGameMenuItem.textContent = "New Game";
+      newGameMenuItem.onclick = function(event) {
+        presenter.reset();
+      };
+      menu.appendChild(newGameMenuItem);
+      element.appendChild(menu);
+      
       var container = element.querySelector(".board");
       if(container) {
         element.removeChild(container);
@@ -158,7 +175,7 @@ if(!Chess.View) {
         file.classList.add("file");
       }
     };
-    that.render(spec.element);
+    that.render();
     return that;
   };
 }

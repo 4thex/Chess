@@ -90,3 +90,10 @@
   width: 200px;
   padding: 1em;
 }
+
+#menu {
+  padding: 0.5em;
+  background-color: blue;
+  color: white;
+  cursor: pointer;
+}

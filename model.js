@@ -81,6 +81,13 @@ Chess.Model = Chess.Model || function constructor(spec) {
     that.place(square, undefined);
   };
   
+  that.reset = function() {
+    that.forEach(function(piece) {
+      that.remove(piece.square);
+    });
+    that.moves.length = 0;
+  };
+  
   var board = function(){
     var board = [];
     var rankId, fileId;
@@ -93,34 +100,34 @@ Chess.Model = Chess.Model || function constructor(spec) {
         board[rank][file] = undefined;
       }
     }
-    rank = board[Chess.Ranks[2]];
-    for(fileId in Chess.Files) {
-      file = Chess.Files[fileId];
-      rank[file] = {color: Chess.Colors.White, kind: Chess.Kinds.P};
-    }
-    rank = board[Chess.Ranks[7]];
-    for(fileId in Chess.Files) {
-      file = Chess.Files[fileId];
-      rank[file] = {color: Chess.Colors.Black, kind: Chess.Kinds.P};
-    }
-    rank = board[Chess.Ranks[1]];
-    rank[Chess.Files.a] = {color: Chess.Colors.White, kind: Chess.Kinds.R};
-    rank[Chess.Files.b] = {color: Chess.Colors.White, kind: Chess.Kinds.N};
-    rank[Chess.Files.c] = {color: Chess.Colors.White, kind: Chess.Kinds.B};
-    rank[Chess.Files.d] = {color: Chess.Colors.White, kind: Chess.Kinds.Q};
-    rank[Chess.Files.e] = {color: Chess.Colors.White, kind: Chess.Kinds.K};
-    rank[Chess.Files.f] = {color: Chess.Colors.White, kind: Chess.Kinds.B};
-    rank[Chess.Files.g] = {color: Chess.Colors.White, kind: Chess.Kinds.N};
-    rank[Chess.Files.h] = {color: Chess.Colors.White, kind: Chess.Kinds.R};
-    rank = board[Chess.Ranks[8]];
-    rank[Chess.Files.a] = {color: Chess.Colors.Black, kind: Chess.Kinds.R};
-    rank[Chess.Files.b] = {color: Chess.Colors.Black, kind: Chess.Kinds.N};
-    rank[Chess.Files.c] = {color: Chess.Colors.Black, kind: Chess.Kinds.B};
-    rank[Chess.Files.d] = {color: Chess.Colors.Black, kind: Chess.Kinds.Q};
-    rank[Chess.Files.e] = {color: Chess.Colors.Black, kind: Chess.Kinds.K};
-    rank[Chess.Files.f] = {color: Chess.Colors.Black, kind: Chess.Kinds.B};
-    rank[Chess.Files.g] = {color: Chess.Colors.Black, kind: Chess.Kinds.N};
-    rank[Chess.Files.h] = {color: Chess.Colors.Black, kind: Chess.Kinds.R};
+    // rank = board[Chess.Ranks[2]];
+    // for(fileId in Chess.Files) {
+    //   file = Chess.Files[fileId];
+    //   rank[file] = {color: Chess.Colors.White, kind: Chess.Kinds.P};
+    // }
+    // rank = board[Chess.Ranks[7]];
+    // for(fileId in Chess.Files) {
+    //   file = Chess.Files[fileId];
+    //   rank[file] = {color: Chess.Colors.Black, kind: Chess.Kinds.P};
+    // }
+    // rank = board[Chess.Ranks[1]];
+    // rank[Chess.Files.a] = {color: Chess.Colors.White, kind: Chess.Kinds.R};
+    // rank[Chess.Files.b] = {color: Chess.Colors.White, kind: Chess.Kinds.N};
+    // rank[Chess.Files.c] = {color: Chess.Colors.White, kind: Chess.Kinds.B};
+    // rank[Chess.Files.d] = {color: Chess.Colors.White, kind: Chess.Kinds.Q};
+    // rank[Chess.Files.e] = {color: Chess.Colors.White, kind: Chess.Kinds.K};
+    // rank[Chess.Files.f] = {color: Chess.Colors.White, kind: Chess.Kinds.B};
+    // rank[Chess.Files.g] = {color: Chess.Colors.White, kind: Chess.Kinds.N};
+    // rank[Chess.Files.h] = {color: Chess.Colors.White, kind: Chess.Kinds.R};
+    // rank = board[Chess.Ranks[8]];
+    // rank[Chess.Files.a] = {color: Chess.Colors.Black, kind: Chess.Kinds.R};
+    // rank[Chess.Files.b] = {color: Chess.Colors.Black, kind: Chess.Kinds.N};
+    // rank[Chess.Files.c] = {color: Chess.Colors.Black, kind: Chess.Kinds.B};
+    // rank[Chess.Files.d] = {color: Chess.Colors.Black, kind: Chess.Kinds.Q};
+    // rank[Chess.Files.e] = {color: Chess.Colors.Black, kind: Chess.Kinds.K};
+    // rank[Chess.Files.f] = {color: Chess.Colors.Black, kind: Chess.Kinds.B};
+    // rank[Chess.Files.g] = {color: Chess.Colors.Black, kind: Chess.Kinds.N};
+    // rank[Chess.Files.h] = {color: Chess.Colors.Black, kind: Chess.Kinds.R};
     
     return board;
   }();
@@ -142,4 +149,6 @@ Chess.Model = Chess.Model || function constructor(spec) {
   
   return that;
 };
+
+
 

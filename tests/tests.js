@@ -1,6 +1,11 @@
 QUnit.module("Model");
 QUnit.test("Peek returns correct pieces initially", function(assert) {
   var model = Chess.Model();
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
   var verifyThat = function(tile, expected) {
     var piece = model.peek(tile);
     assert.deepEqual(piece, expected, "Tile " + Chess.Files.nameFor(tile.file) + Chess.Ranks.nameFor(tile.rank) + 
@@ -67,6 +72,17 @@ QUnit.test("Call to whichRank returns correct rank", function(assert) {
 	assert.strictEqual(model.whichRank(Chess.Kinds.N, Chess.Files.c, Chess.Colors.White), Chess.Ranks[3], "Expected 3 (2)");
 });
 
+QUnit.test("Model is empty after call to reset", function(assert) {
+  var model = Chess.Model();
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
+  assert.deepEqual(model.peek({file: Chess.Files.e, rank: Chess.Ranks[1]}), {color: Chess.Colors.White, kind: Chess.Kinds.K});
+  model.reset();
+  assert.deepEqual(model.peek({file: Chess.Files.e, rank: Chess.Ranks[1]}), undefined);
+});
 
 QUnit.module("Rules");
 
@@ -94,6 +110,11 @@ QUnit.test("Rules must enforce order of moves", function(assert) {
 
 QUnit.test("White must move first", function(assert) {
   var model = Chess.Model();
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view});
   var rules = Chess.Rules(model);
   var move = {
         from: {file: Chess.Files.a, rank: Chess.Ranks[7]},
@@ -1607,3 +1628,14 @@ QUnit.test("Persister can store a complex object", function(assert) {
   });
 });
 
+QUnit.test("Persister can be reset", function(assert) {
+  assert.expect(1);
+  var persister = Chess.Persister({name: test});
+  persister.save({some: "5"}, function() {
+    persister.clear(function() {
+      persister.load(function(spec) {
+        assert.equal(spec.item, null);
+      });
+    });
+  });    
+});

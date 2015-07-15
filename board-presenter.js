@@ -6,6 +6,7 @@ Chess.BoardPresenter = function(spec) {
   var that = {};
   that.initialize = function() {
     view.presenter = that;
+    model.reset();
     var pieces = [
       [{file: Chess.Files.a, rank: Chess.Ranks[1]}, {kind: Chess.Kinds.R, color: Chess.Colors.White}],
       [{file: Chess.Files.b, rank: Chess.Ranks[1]}, {kind: Chess.Kinds.N, color: Chess.Colors.White}],
@@ -93,6 +94,18 @@ Chess.BoardPresenter = function(spec) {
     if(persister) {
       persister.save(model.moves);
     }
+  };
+  
+  that.reset = function() {
+    if(persister) {
+      persister.clear(function() {
+        view.render();
+        that.initialize();
+      });
+    } else {
+      view.render();
+      that.initialize();
+    } 
   };
   
   that.initialize();
