@@ -168,22 +168,4 @@ window.addEventListener("load", function() {
   var boardPresenter = Chess.BoardPresenter({model: model, view: view, persister: persister});
 });
 
-nt("div");
-        container.appendChild(file);
-        file.textContent = Chess.Files.nameFor(fileIndex);
-        file.classList.add("file");
-      }
-    };
-    that.render();
-    return that;
-  };
-}
-
-window.addEventListener("load", function() {
-  var body = document.querySelector("body");
-  var persister = Chess.Persister({name: "state"});
-  var model = Chess.Model({persister: persister});
-  var view = Chess.View({element: body, model: model});
-  var boardPresenter = Chess.BoardPresenter({model: model, view: view, persister: persister});
-});
 
