@@ -63,27 +63,7 @@ if(!Chess.View) {
     that.place = function(square, piece) {
       piece.square = square;
       var squareElement = document.querySelector("#square-"+Chess.Files.nameFor(square.file)+Chess.Ranks.nameFor(square.rank));
-      var figurine;
-      switch(piece.kind) {
-        case Chess.Kinds.K:
-          figurine = "\u265A";
-          break;
-        case Chess.Kinds.Q:
-          figurine = "\u265B";
-          break;
-        case Chess.Kinds.R:
-          figurine = "\u265C";
-          break;
-        case Chess.Kinds.B:
-          figurine = "\u265D";
-          break;
-        case Chess.Kinds.N:
-          figurine = "\u265E";
-          break;
-        case Chess.Kinds.P:
-          figurine = "\u265F";
-          break;
-      }
+      var figurine = Chess.Figurines[piece.kind];
       var pieceElement = squareElement.querySelector("p.piece");
       if(!pieceElement) {
         pieceElement = document.createElement("p");
@@ -170,6 +150,25 @@ if(!Chess.View) {
       cornerElement.classList.add("corner");
       for(fileIndex=0; fileIndex<8; ++fileIndex) {
         var file = document.createElement("div");
+        container.appendChild(file);
+        file.textContent = Chess.Files.nameFor(fileIndex);
+        file.classList.add("file");
+      }
+    };
+    that.render();
+    return that;
+  };
+}
+
+window.addEventListener("load", function() {
+  var body = document.querySelector("body");
+  var persister = Chess.Persister({name: "state"});
+  var model = Chess.Model({persister: persister});
+  var view = Chess.View({element: body, model: model});
+  var boardPresenter = Chess.BoardPresenter({model: model, view: view, persister: persister});
+});
+
+nt("div");
         container.appendChild(file);
         file.textContent = Chess.Files.nameFor(fileIndex);
         file.classList.add("file");

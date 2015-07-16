@@ -97,3 +97,16 @@
   color: white;
   cursor: pointer;
 }
+
+#promotion-dialog {
+  background-color: blue;
+  color: white;
+  position: absolute;
+  z-index: 100;
+  padding: 1em;
+}
+#promotion-dialog .choice {
+  cursor: pointer;
+  font-size: 40px;
+  float: left;
+}
