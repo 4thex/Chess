@@ -91,6 +91,23 @@ Chess.BoardPresenter = function(spec) {
         place({file: Chess.Files.c, rank: to.rank}, {color: piece.color, kind: Chess.Kinds.R});
       }
     }
+    // Pawn promotion
+    if(piece.kind === Chess.Kinds.P && (to.rank === Chess.Ranks[1] || to.rank === Chess.Ranks[8])) {
+      if(spec.promote) {
+        that.promote(to, spec.promote.kind);
+      } else {
+        var promotionView = Chess.PromotionView({square: to, presenter: this});
+        promotionView.show();
+      }
+    }
+    if(persister) {
+      persister.save(model.moves);
+    }
+  };
+  
+  that.promote = function(square, kind) {
+    place(square, {color: model.peek(square).color, kind: kind});
+    model.moves.slice(-1)[0].piece.kind = kind;
     if(persister) {
       persister.save(model.moves);
     }

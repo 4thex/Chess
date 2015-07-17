@@ -1,3 +1,41 @@
+QUnit.module("Presenter");
+
+QUnit.test("Presenter promote updates model, view, moves, and persister correctly", function(assert) {
+  assert.expect(6);
+  var model = {
+    reset: function(){},
+    place: function(){},
+    peek: function(){
+      return {kind: Chess.Kinds.P, color: Chess.Colors.White};
+    },
+    moves: [{piece: {kind: Chess.Kinds.P, color: Chess.Colors.White}}]
+  };
+  var view = {
+    place: function(){},
+    remove: function(){}
+  };
+  var persister = {
+    load: function(){},
+    save: function(){}
+  };
+  var presenter = Chess.BoardPresenter({model: model, view: view, persister: persister});
+  model.place = function(square, piece) {
+    assert.ok(square.file === Chess.Files.a && square.rank === Chess.Ranks[8]);
+    assert.ok(piece.kind === Chess.Kinds.Q && piece.color === Chess.Colors.White);
+  };
+  view.place = model.place;
+  persister.save = function(item) {
+    assert.deepEqual(item, [{
+      piece: {
+        color: Chess.Colors.White,
+        kind: Chess.Kinds.Q
+      }
+    }]);
+  };
+  presenter.promote({file: Chess.Files.a, rank: Chess.Ranks[8]}, Chess.Kinds.Q); 
+  assert.strictEqual(model.moves[0].piece.kind, Chess.Kinds.Q);
+});
+
 QUnit.module("Model");
 QUnit.test("Peek returns correct pieces initially", function(assert) {
   var model = Chess.Model();
@@ -1638,4 +1676,15 @@ QUnit.test("Persister can be reset", function(assert) {
       });
     });
   });    
-});
+});  
+
+
+
+
+
+ 
+
+
+
+
+

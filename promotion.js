@@ -2,7 +2,7 @@ var Chess = Chess || {};
 Chess.PromotionView = Chess.PromotionView || function(spec) {
   var that = {};
   var presenter = spec.presenter;
-  var container = spec.container;
+  var container = spec.container || document.body;
   var square = spec.square;
   var dialog;
   that.show = function(spec) {
@@ -14,15 +14,16 @@ Chess.PromotionView = Chess.PromotionView || function(spec) {
       element.innerHTML = Chess.Figurines[kind];
       element.onclick = function(event) {
         event.stopPropagation();
-        presenter.promote(square, element.id);
+        presenter.promote(square, kind);
+        that.hide();
       };
       container.appendChild(element);
     }; 
     var document = container.ownerDocument;
     if(!dialog) {
       dialog = document.createElement("div");
-      dialog.style.top = spec.y+"px";
-      dialog.style.left = spec.x+"px";
+      // dialog.style.top = spec.y+"px";
+      // dialog.style.left = spec.x+"px";
       dialog.id = "promotion-dialog";
       var header = document.createElement("div");
       header.innerHTML = "Choose a promotion";
